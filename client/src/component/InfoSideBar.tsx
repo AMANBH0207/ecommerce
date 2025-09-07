@@ -35,16 +35,22 @@ function InfoSideBar() {
 
         <div className="border-gray-300 border-b-1 w-full p-4">
           <span className="cursor-pointer">PAYMENTS</span>
-          <p className="p-2 cursor-pointer">Saved UPI</p>
-          <p className="p-2 cursor-pointer">Saved Cards</p>
+
+          <Link to="savedupi">
+            <p className="p-2 cursor-pointer">Saved UPI</p>
+          </Link>
+
+          <Link to="savedcards">
+            <p className="p-2 cursor-pointer">Saved Cards</p>
+          </Link>
         </div>
 
-        <div className="border-gray-300 border-b-1 w-full p-4">
+        {/* <div className="border-gray-300 border-b-1 w-full p-4">
           <span className="cursor-pointer">MY STUFF</span>
           <p className="p-2 cursor-pointer">My Coupons</p>
           <p className="p-2 cursor-pointer">My Review & Ratings</p>
           <p className="p-2 cursor-pointer">My Wishlist</p>
-        </div>
+        </div> */}
 
         <div className="w-full p-4">
           <span className="cursor-pointer">LOGOUT</span>

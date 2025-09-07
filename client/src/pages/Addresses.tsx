@@ -4,6 +4,7 @@ import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 
 function Addresses() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [addAddress, setAddAddress] = useState<boolean>(false);
 
   const addresses = [
     {
@@ -28,26 +29,138 @@ function Addresses() {
   ];
 
   return (
-    <div>
+    <>
       <div className="p-4 rounded-lg bg-white">
         <h5 className="py-4 font-bold text-lg">Manage Addresses</h5>
-        <div className="p-5 mb-4 border border-gray-300 cursor-pointer text-green-500 font-semibold">
-          + ADD A NEW ADDRESS
+
+        {/* Add New Address */}
+        <div
+          className={`p-5 mb-4 border border-gray-300 ${
+            addAddress && "bg-[#f5fff5]"
+          }`}
+        >
+          <div
+            className="cursor-pointer text-green-500 font-semibold"
+            onClick={() => setAddAddress(true)}
+          >
+            {!addAddress && "+"} ADD A NEW ADDRESS
+          </div>
+
+          {addAddress && (
+            <>
+              {/* Name & Phone */}
+              <div className="flex flex-col sm:flex-row gap-3 p-2">
+                <input
+                  className="flex-1 p-2 border border-gray-300 bg-white"
+                  type="text"
+                  placeholder="Name"
+                />
+                <input
+                  className="flex-1 p-2 border border-gray-300 bg-white"
+                  type="text"
+                  placeholder="10-digit mobile number"
+                />
+              </div>
+
+              {/* Pincode & Locality */}
+              <div className="flex flex-col sm:flex-row gap-3 p-2">
+                <input
+                  className="flex-1 p-2 border border-gray-300 bg-white"
+                  type="number"
+                  placeholder="Pincode"
+                />
+                <input
+                  className="flex-1 p-2 border border-gray-300 bg-white"
+                  type="text"
+                  placeholder="Locality"
+                />
+              </div>
+
+              {/* Address */}
+              <div className="p-2">
+                <textarea
+                  className="p-2 w-full border border-gray-300 bg-white"
+                  placeholder="Address (Area and Street)"
+                  rows={3}
+                />
+              </div>
+
+              {/* City & State */}
+              <div className="flex flex-col sm:flex-row gap-3 p-2">
+                <input
+                  className="flex-1 p-2 border border-gray-300 bg-white"
+                  type="text"
+                  placeholder="City/District/Town"
+                />
+                <select className="flex-1 p-2 border border-gray-300 bg-white">
+                  <option selected disabled>
+                    -- Select State --
+                  </option>
+                  <option>Andaman & Nicobar Islands</option>
+                  <option>Andhra Pradesh</option>
+                </select>
+              </div>
+
+              {/* Landmark & Alternate Phone */}
+              <div className="flex flex-col sm:flex-row gap-3 p-2">
+                <input
+                  className="flex-1 p-2 border border-gray-300 bg-white"
+                  type="text"
+                  placeholder="Landmark (Optional)"
+                />
+                <input
+                  className="flex-1 p-2 border border-gray-300 bg-white"
+                  type="text"
+                  placeholder="Alternate Phone (Optional)"
+                />
+              </div>
+
+              {/* Address Type */}
+              <div className="p-2">
+                <label className="text-sm">Address Type</label>
+                <div className="flex gap-4 mt-1">
+                  <label className="flex items-center gap-2 text-gray-500">
+                    <input type="radio" name="type" />
+                    Home
+                  </label>
+                  <label className="flex items-center gap-2 text-gray-500">
+                    <input type="radio" name="type" />
+                    Work
+                  </label>
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="p-2 flex flex-wrap gap-3">
+                <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 font-bold rounded">
+                  Save
+                </button>
+                <button
+                  className="text-green-500 font-bold"
+                  onClick={() => setAddAddress(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
+        {/* Saved Addresses */}
         {addresses.map((item, index) => (
-          <div key={index} className="p-5 border border-gray-300 relative mb-4">
-            <div className="flex justify-between items-start">
-              <div className="w-max bg-gray-100 px-2 py-1 text-xs text-gray-500 font-bold">
+          <div
+            key={index}
+            className="p-5 border border-gray-300 relative mb-4 rounded-lg"
+          >
+            <div className="flex justify-between items-start flex-wrap gap-2">
+              <div className="w-max bg-gray-100 px-2 py-1 text-xs text-gray-500 font-bold rounded">
                 {item.label}
               </div>
 
               {/* 3 dots menu */}
               <div
                 className="cursor-pointer relative"
-                onClick={() =>
-                  setOpenIndex(openIndex === index ? null : index)
-                }
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
               >
                 <FontAwesomeIcon
                   icon={faEllipsisVertical}
@@ -68,14 +181,15 @@ function Addresses() {
               </div>
             </div>
 
-            <div className="font-semibold py-2">
-              <span>{item.name}</span> <span>{item.phone}</span>
+            <div className="font-semibold py-2 break-words">
+              <span>{item.name}</span>{" "}
+              <span className="text-gray-600">{item.phone}</span>
             </div>
-            <div>{item.address}</div>
+            <div className="break-words text-gray-700">{item.address}</div>
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }
 
