@@ -3,6 +3,7 @@ import LoginForm from "../component/LoginForm";
 import loginImage from "../assets/images/login.svg.png";
 import { useLocation } from "react-router-dom";
 import SignupForm from "../component/SignupForm";
+import { registerUser } from "../services/ApiService";
 
 function LoginPage() {
   const location=useLocation()
@@ -13,11 +14,10 @@ function LoginPage() {
     setTheme(newTheme);
   };
 
-  useEffect(()=>{console.log(location)},[location])
-
   const handleLogin = (formvalues:any) => {
     console.log("Login attempt:",  formvalues);
-    // Add API call here
+    const response = registerUser(formvalues);
+    console.log(response)
   };
 
   return (
