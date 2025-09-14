@@ -1,23 +1,30 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LoginForm from "../component/LoginForm";
 import loginImage from "../assets/images/login.svg.png";
 import { useLocation } from "react-router-dom";
 import SignupForm from "../component/SignupForm";
-import { registerUser } from "../services/ApiService";
+import { loginUser, register } from "../features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 function LoginPage() {
-  const location=useLocation()
+  const location = useLocation();
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const dispatch = useAppDispatch();
+
+  const { loading, error, user, token } = useAppSelector((state) => state.auth);
+
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", newTheme);
     setTheme(newTheme);
   };
 
-  const handleLogin = (formvalues:any) => {
-    console.log("Login attempt:",  formvalues);
-    const response = registerUser(formvalues);
-    console.log(response)
+  const handleLogin = (formValues: any) => {
+    dispatch(loginUser(formValues));
+  };
+
+  const handleSignup = (formValues: any) => {
+    dispatch(register(formValues));
   };
 
   return (
@@ -30,15 +37,13 @@ function LoginPage() {
       {/* Form section */}
       <div className="md:w-1/2 flex items-center">
         <div className="w-full p-8 transition-colors">
-          {/* Optional Theme Toggle */}
-          {/* <button
-            onClick={toggleTheme}
-            className="absolute top-4 right-4 bg-blue-500 dark:bg-blue-400 text-white px-3 py-1 rounded"
-          >
-            {theme === "light" ? "Dark" : "Light"} Mode
-          </button> */}
-        {location.pathname==="/login"?<LoginForm onSubmit={handleLogin} />:<SignupForm onSubmit={handleLogin}/>}
-          
+          {location.pathname === "/login" ? (
+            <LoginForm onSubmit={handleLogin} />
+          ) : (
+            <SignupForm onSubmit={handleSignup} />
+          )}
+          {loading && <p className="text-blue-500">Loading...</p>}
+          {error && <p className="text-red-500">{error}</p>}
         </div>
       </div>
     </div>
