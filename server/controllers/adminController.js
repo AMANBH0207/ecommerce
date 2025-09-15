@@ -2,30 +2,28 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-exports.registerUser = async (req, res) => {
+exports.registerAdmin = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
-
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      return res
-        .status(400)
-        .json({ message: "Email Already Exist! Please Login." });
+      return res.status(400).json({
+        message: `Email already registered as a ${userExists.role}. Please login or use a different email.`,
+      });
     }
-
     const user = new User({
       name,
       email,
       passwordHash: password,
       phone,
+      role: "admin",
     });
 
     await user.save();
-
     res.status(201).json({
       success: true,
-      message: "user registered successfully",
+      message: "admin registered successfully",
       data: {
         _id: user._id,
         name: user.name,
@@ -36,21 +34,27 @@ exports.registerUser = async (req, res) => {
   } catch (e) {
     res
       .status(500)
-      .json({ message: "Error registering user", error: err.message });
+      .json({ message: "Error registering admin", error: err.message });
   }
 };
 
-exports.Login = async (req, res) => {
+
+exports.adminLogin = async (req, res) => {
   const { email, password } = req.body;
+
   const userExist = await User.findOne({ email }).select("+passwordHash");
   if (!userExist) {
-    return res.status(401).json({ message: "user not exist", success: false });
+    return res.status(401).json({ message: "Admin not exist", success: false });
   }
+
+  // ✅ Ensure this account is actually an admin
+  if (userExist.role !== "admin") {
+    return res.status(403).json({ message: "Access denied. Not an admin", success: false });
+  }
+
   const isMatch = await bcrypt.compare(password, userExist.passwordHash);
   if (!isMatch) {
-    return res
-      .status(401)
-      .json({ message: "invalid password", success: false });
+    return res.status(401).json({ message: "Invalid password", success: false });
   }
 
   const token = jwt.sign(
@@ -60,7 +64,7 @@ exports.Login = async (req, res) => {
   );
 
   res.status(200).json({
-    message: "Logged In Successfully",
+    message: "Admin Logged In Successfully",
     success: true,
     data: {
       addresses: userExist.addresses,
@@ -69,7 +73,7 @@ exports.Login = async (req, res) => {
       name: userExist.name,
       role: userExist.role,
       updatedAt: userExist.updatedAt,
-      token: token,
+      token,
     },
   });
 };
