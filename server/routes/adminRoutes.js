@@ -6,4 +6,3 @@ router.post("/register-admin",registerAdmin)
 router.post("/login-admin",adminLogin)
 
 module.exports = router;
-

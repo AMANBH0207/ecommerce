@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-
 import Loader from './common/Loader';
-import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import Calendar from './pages/Calendar';
@@ -15,10 +13,14 @@ import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Banners from './pages/Banners/Banners';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -32,6 +34,7 @@ function App() {
     <Loader />
   ) : (
     <>
+    <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
         <Route
           index
@@ -39,6 +42,15 @@ function App() {
             <>
               {/* <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" /> */}
               <ECommerce />
+            </>
+          }
+        />
+         <Route
+         path="/banners"
+          element={
+            <>
+              {/* <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" /> */}
+              <Banners />
             </>
           }
         />

@@ -9,7 +9,8 @@ exports.registerAdmin = async (req, res) => {
 
     if (userExists) {
       return res.status(400).json({
-        message: `Email already registered as a ${userExists.role}. Please login or use a different email.`,
+        success:false,
+        message: `Email already registered as a ${userExists.role}.`,
       });
     }
     const user = new User({
