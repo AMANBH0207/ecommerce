@@ -1,25 +1,23 @@
 import React from 'react';
+import { BannerModalProps } from '../../types/banner';
 
-function BannerModal({ formState, errors, handleChange, handleSubmit }) {
+function BannerModal({ formState, errors, handleChange }:BannerModalProps) {
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-[600px] sm:px-4 mx-auto overflow-x-hidden"
-    >
+    <form className="w-full max-w-[600px] sm:px-4 mx-auto overflow-x-hidden">
       <div className="flex flex-col gap-5">
         {/* Title / Bond ID */}
         <div className="form-group w-full">
           <label
             className="mb-2 block text-sm font-medium text-black dark:text-white"
-            htmlFor="id"
+            htmlFor="title"
           >
             Title
           </label>
           <input
             className="w-full max-w-full rounded border border-stroke bg-gray py-3 px-3 text-black focus:border-primary focus:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-            name="id"
+            name="title"
             onChange={handleChange}
-            value={formState.id}
+            value={formState.title}
           />
         </div>
 
@@ -30,8 +28,10 @@ function BannerModal({ formState, errors, handleChange, handleSubmit }) {
           </label>
           <div className="relative w-full cursor-pointer rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5 overflow-hidden">
             <input
+              name="image"
               type="file"
               accept="image/*"
+              onChange={handleChange}
               className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
             />
             <div className="flex flex-col items-center justify-center space-y-2">
@@ -67,7 +67,6 @@ function BannerModal({ formState, errors, handleChange, handleSubmit }) {
                 <span className="text-primary">Click to upload</span> or drag
                 and drop
               </p>
-              <p className="text-xs">SVG, PNG, JPG or GIF (max 800x800px)</p>
             </div>
           </div>
         </div>
@@ -92,26 +91,26 @@ function BannerModal({ formState, errors, handleChange, handleSubmit }) {
         <div className="form-group w-full">
           <label
             className="mb-2 block text-sm font-medium text-black dark:text-white"
-            htmlFor="type"
+            htmlFor="status"
           >
             Status
           </label>
           <div className="relative w-full rounded border border-stroke p-1.5 pr-8 dark:border-strokedark dark:bg-form-input">
             <span
               className={`${
-                formState.type == 0 ? 'bg-[#04b20c]' : 'bg-[#e13f32]'
+                formState.status == 1 ? 'bg-[#04b20c]' : 'bg-[#e13f32]'
               } m-1.5 flex items-center justify-center rounded border-[.5px] border-stroke py-1.5 px-2.5 text-white font-medium dark:border-strokedark`}
             >
-              {formState.type == 0 ? 'Active' : 'Inactive'}
+              {formState.status == 1 ? 'Active' : 'Inactive'}
             </span>
             <select
               className="absolute inset-0 z-20 h-full w-full bg-transparent opacity-0"
-              name="type"
+              name="status"
               onChange={handleChange}
-              value={formState.type}
+              value={formState.status}
             >
-              <option value="0">Active</option>
-              <option value="1">Inactive</option>
+              <option value="0">Inactive</option>
+              <option value="1">Active</option>
             </select>
           </div>
         </div>

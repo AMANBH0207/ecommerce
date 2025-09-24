@@ -5,11 +5,15 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { Link } from 'react-router-dom';
 import { Modal } from '../../components/ModalSettings';
 import BannerModal from '../../components/ModalBody/BannerModal';
+import { BannerModalProps } from '../../types/banner';
+import { useAppDispatch } from '../../store/hooks';
+import { addBanner } from '../../features/banners/bannerThunks';
 
 function Banners() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useAppDispatch();  
   const handleFormSubmit = (data: any) => {
-    console.log('Form submitted:', data);
+    dispatch(addBanner(data));
   };
 
   return (
@@ -58,14 +62,15 @@ function Banners() {
             closeModal={() => setIsModalOpen(false)}
             onSubmit={handleFormSubmit}
             defaultValue={{
-              id: '123',
-              para: 'price',
-              criterion: '0',
-              value: '100',
-              type: '1',
+              title: '123',
+              image: null,
+              link: '',
+              status: 0,
+              startDate:"",
+              endDate:""
             }}
           >
-            {(formProps) => <BannerModal {...formProps} />}
+            {(formProps:BannerModalProps) => <BannerModal {...formProps} />}
           </Modal>
         )}
       </DefaultLayout>

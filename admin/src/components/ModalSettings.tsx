@@ -1,55 +1,36 @@
 import { useState } from 'react';
-import dataJSON from '../../public/data.json';
 
-export const Modal = ({ closeModal, onSubmit, defaultValue, children }) => {
-  const [formState, setFormState] = useState(
-    defaultValue || {
-      id: '',
-      para: 'price',
-      criterion: '0',
-      value: '',
-      type: '0',
-    },
-  );
+export const Modal = ({ closeModal, onSubmit, defaultValue = {}, children }) => {
+  const [formState, setFormState] = useState(defaultValue);
   const [errors, setErrors] = useState<string[]>([]);
 
   const validateForm = () => {
-    if (formState.id && formState.value) {
-      setErrors([]);
-      return true;
-    } else {
-      let errorFields = [];
-      for (const [key, value] of Object.entries(formState)) {
-        if (!value) {
-          errorFields.push(key === 'id' ? 'Bond ID' : key);
-        } else if (key === 'id') {
-          if (!(Object.keys(dataJSON).includes(value) || value === 'ALL')) {
-            errorFields.push('INVALID_ID_' + value);
-          }
-        }
+    let errorFields: string[] = [];
+
+    for (const [key, value] of Object.entries(formState)) {
+      if (!value) {
+        errorFields.push(key);
       }
-      setErrors(errorFields);
-      return false;
     }
+
+    setErrors(errorFields);
+    return errorFields.length === 0;
   };
 
-  const handleChange = (e) => {
-    if (
-      e.target.name === 'para' &&
-      e.target.value === 'rating' &&
-      formState.criterion > 1 &&
-      formState.criterion < 4
-    ) {
-      setFormState({ ...formState, criterion: '0' });
-    } else {
-      setFormState({ ...formState, [e.target.name]: e.target.value });
-    }
-  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const { name, type, value, files } = e.target as HTMLInputElement;
+
+  setFormState((prev) => ({
+    ...prev,
+    [name]: type === "file" ? files?.[0] || null : value, // handle file & normal inputs
+  }));
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    onSubmit(formState); // ✅ API will be called in parent
+    onSubmit(formState); 
     closeModal();
   };
 
@@ -71,12 +52,11 @@ export const Modal = ({ closeModal, onSubmit, defaultValue, children }) => {
         {/* Scrollable Body */}
         <div className="overflow-y-auto p-6 flex-1">
           {typeof children === 'function'
-            ? children({ formState, errors, handleChange, handleSubmit })
+            ? children({ formState, errors, handleChange  })
             : children}
         </div>
 
-        {/* Footer (Submit button fixed) */}
-
+        {/* Footer */}
         <div className="border-t border-stroke py-4 px-7 dark:border-strokedark flex-shrink-0">
           <button
             className="btn flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"

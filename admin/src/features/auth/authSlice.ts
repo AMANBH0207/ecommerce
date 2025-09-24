@@ -1,6 +1,7 @@
 import { LoginRegisterResponse } from "../../services/types/authTypes";
 import { createSlice } from "@reduxjs/toolkit";
 import { login, register } from "./authThunks";
+import { Storage } from "../../utils/localStorage";
 
 interface AuthState {
   user: LoginRegisterResponse | null;
@@ -9,9 +10,11 @@ interface AuthState {
   error: string | null;
 }
 
+const user = Storage.getItem<LoginRegisterResponse>("user");
+
 const initialState: AuthState = {
-  user: null,
-  token: null,
+  user: user,
+  token: user?.token || null,
   loading: false,
   error: null,
 };
@@ -21,7 +24,7 @@ const authSlice = createSlice({
     name:"auth",
     initialState,
     reducers:{
-        logout:(state,action)=>{
+        logout:(state)=>{
             state.token=null;
             state.user=null;
         },
@@ -57,6 +60,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
+        Storage.setItem("user", action.payload.data);
         state.loading = false;
         state.error = null;
         state.token = action.payload.data.token;
