@@ -17,3 +17,13 @@ export interface uploadBannerResponse {
       priority: number;
 }
 
+export interface BannersDataResponse {
+    _id: string,
+    title: string,
+    image: string,
+    link: string,
+    status: number,
+    startDate: string,
+    endDate: string,
+    priority: number,
+}

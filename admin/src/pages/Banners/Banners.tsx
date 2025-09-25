@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import TableTwo from '../../components/Tables/TableTwo';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
@@ -6,20 +6,66 @@ import { Link } from 'react-router-dom';
 import { Modal } from '../../components/ModalSettings';
 import BannerModal from '../../components/ModalBody/BannerModal';
 import { BannerModalProps } from '../../types/banner';
-import { useAppDispatch } from '../../store/hooks';
-import { addBanner } from '../../features/banners/bannerThunks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {
+  addBanner,
+  deleteBanner,
+  getBanners,
+  toggleStatus,
+  updateBanner,
+} from '../../features/banners/bannerThunks';
+import BannerBody from '../../components/Tables/TableBody/BannerBody';
+import Loader from '../../components/Loader/Loader';
+import { BannersDataResponse } from '../../services/types/actionTypes';
 
 function Banners() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const dispatch = useAppDispatch();  
+  const { banners, loading, error } = useAppSelector((state) => state.banner);
+  const [editData, setEditData] = useState<any | null>(null);
+  const dispatch = useAppDispatch();
+  
+  useEffect(() => {
+    console.log('Banners data:', editData);
+  },[editData])
+
   const handleFormSubmit = (data: any) => {
-    dispatch(addBanner(data));
+    if (editData) {
+      dispatch(updateBanner({ id: editData?._id, payload: data }));
+    } else {
+      dispatch(addBanner(data));
+    }
+    setIsModalOpen(false);
+    setEditData(null);
   };
+  useEffect(() => {
+    dispatch(getBanners());
+  }, []);
+
+  const deleteBanners = async (id: string) => {
+    dispatch(deleteBanner(id));
+  };
+
+  const changeStatus = async (id: string) => {
+    dispatch(toggleStatus(id));
+  };
+
+  const header = [
+    { name: 'Title', key: 'title' },
+    { name: 'Image', key: 'image' },
+    { name: 'Link', key: 'link' },
+    { name: 'Status', key: 'status' },
+    { name: 'Start Date', key: 'startDate' },
+    { name: 'End Date', key: 'endDate' },
+    { name: 'Actions', key: 'actions' },
+  ];
 
   return (
     <>
+      {loading && <Loader />}
+
       <DefaultLayout>
         <Breadcrumb pageName="Banners" />
+
         <div className="flex justify-end">
           <Link
             to="#"
@@ -49,28 +95,56 @@ function Banners() {
                 />
               </svg>
             </span>
-            Button With Icon
+            Add Banner
           </Link>
         </div>
 
         <div className="flex flex-col gap-10">
-          <TableTwo />
+          <TableTwo
+            TableBody={
+              <BannerBody
+                items={banners}
+                deleteBanners={deleteBanners}
+                changeStatus={changeStatus}
+                editBanner={(item: BannersDataResponse) => {
+                  setEditData(item); // set the banner being edited
+                  setIsModalOpen(true);
+                }}
+              />
+            }
+            header={header}
+            heading="Banners"
+          />
         </div>
 
         {isModalOpen && (
           <Modal
-            closeModal={() => setIsModalOpen(false)}
-            onSubmit={handleFormSubmit}
-            defaultValue={{
-              title: '123',
-              image: null,
-              link: '',
-              status: 0,
-              startDate:"",
-              endDate:""
+            closeModal={() => {
+              setIsModalOpen(false);
+              setEditData(null); 
             }}
+            onSubmit={handleFormSubmit}
+            defaultValue={
+              editData
+                ? {
+                    title: editData.title,
+                    image: editData.image,
+                    link: editData.link,
+                    status: editData.status,
+                    startDate: editData.startDate,
+                    endDate: editData.endDate,
+                  }
+                : {
+                    title: '',
+                    image: null,
+                    link: '',
+                    status: 0,
+                    startDate: '',
+                    endDate: '',
+                  }
+            }
           >
-            {(formProps:BannerModalProps) => <BannerModal {...formProps} />}
+            {(formProps: BannerModalProps) => <BannerModal {...formProps} />}
           </Modal>
         )}
       </DefaultLayout>
