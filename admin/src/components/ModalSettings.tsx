@@ -1,6 +1,11 @@
 import { useState } from 'react';
 
-export const Modal = ({ closeModal, onSubmit, defaultValue = {}, children }) => {
+export const Modal = ({
+  closeModal,
+  onSubmit,
+  defaultValue = {},
+  children,
+}) => {
   const [formState, setFormState] = useState(defaultValue);
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -17,20 +22,27 @@ export const Modal = ({ closeModal, onSubmit, defaultValue = {}, children }) => 
     return errorFields.length === 0;
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, files } = e.target;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-  const { name, type, value, files } = e.target as HTMLInputElement;
-
-  setFormState((prev) => ({
-    ...prev,
-    [name]: type === "file" ? files?.[0] || null : value, // handle file & normal inputs
-  }));
+  if (name === 'images' && files) {
+    setFormState((prev) => ({
+      ...prev,
+      images: [...(prev.images || []), ...Array.from(files)],
+    }));
+  } else {
+    const target = e.target as HTMLInputElement;
+    setFormState((prev) => ({
+      ...prev,
+      [name]: target.value,
+    }));
+  }
 };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    onSubmit(formState); 
+    onSubmit(formState);
     closeModal();
   };
 
@@ -52,7 +64,7 @@ export const Modal = ({ closeModal, onSubmit, defaultValue = {}, children }) => 
         {/* Scrollable Body */}
         <div className="overflow-y-auto p-6 flex-1">
           {typeof children === 'function'
-            ? children({ formState, errors, handleChange  })
+            ? children({ formState, errors, handleChange })
             : children}
         </div>
 

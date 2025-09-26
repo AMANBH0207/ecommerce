@@ -7,6 +7,7 @@ const userRoutes = require("./routes/userRoutes");
 const cors = require('cors')
 const adminRoutes = require('./routes/adminRoutes')
 const bannerRoutes = require('./routes/bannerRoutes');
+const productRoutes = require('./routes/productRoutes')
 
 app.use(express.json())
 connectDb();
@@ -16,6 +17,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/admin/banner', bannerRoutes);
+app.use('/api/admin/products',productRoutes);
 
 app.listen(process.env.PORT,()=>{
     console.log("server created")

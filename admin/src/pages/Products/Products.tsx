@@ -1,54 +1,24 @@
 import { useEffect, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
-import TableTwo from '../../components/Tables/TableTwo';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { Link } from 'react-router-dom';
-import { Modal } from '../../components/ModalSettings';
-import BannerModal from '../../components/ModalBody/BannerModal';
-import { BannerFormValues, ModalProps } from '../../types/banner';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import {
-  addBanner,
-  deleteBanner,
-  getBanners,
-  toggleStatus,
-  updateBanner,
-} from '../../features/banners/bannerThunks';
-import BannerBody from '../../components/Tables/TableBody/BannerBody';
 import Loader from '../../components/Loader/Loader';
-import { BannersDataResponse } from '../../services/types/actionTypes';
+import { Link } from 'react-router-dom';
+import TableTwo from '../../components/Tables/TableTwo';
+import { Modal } from '../../components/ModalSettings';
+import ProductsBody from '../../components/Tables/TableBody/ProductsBody';
+import ProductModal from '../../components/ModalBody/ProductModal';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { addProduct, getCategories } from '../../features/products/productThunks';
+import { ModalProps, ProductFormValues } from '../../types/banner';
 
-function Banners() {
+function Products() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { banners, loading, error } = useAppSelector((state) => state.banner);
   const [editData, setEditData] = useState<any | null>(null);
+  const { categories, loading } = useAppSelector((state) => state.product);
   const dispatch = useAppDispatch();
-  
   useEffect(() => {
-    console.log('Banners data:', editData);
-  },[editData])
-
-  const handleFormSubmit = (data: any) => {
-    if (editData) {
-      dispatch(updateBanner({ id: editData?._id, payload: data }));
-    } else {
-      dispatch(addBanner(data));
-    }
-    setIsModalOpen(false);
-    setEditData(null);
-  };
-  useEffect(() => {
-    dispatch(getBanners());
-  }, []);
-
-  const deleteBanners = async (id: string) => {
-    dispatch(deleteBanner(id));
-  };
-
-  const changeStatus = async (id: string) => {
-    dispatch(toggleStatus(id));
-  };
-
+    dispatch(getCategories());
+  }, [dispatch]);
   const header = [
     { name: 'Title', key: 'title' },
     { name: 'Image', key: 'image' },
@@ -59,12 +29,22 @@ function Banners() {
     { name: 'Actions', key: 'actions' },
   ];
 
+  const item = [];
+  const handleFormSubmit = (data: any) => {
+    console.log('form data', data);
+    dispatch(addProduct(data));
+  };
+
+
+
+
+
   return (
     <>
       {loading && <Loader />}
 
       <DefaultLayout>
-        <Breadcrumb pageName="Banners" />
+        <Breadcrumb pageName="Products" />
 
         <div className="flex justify-end">
           <Link
@@ -95,23 +75,13 @@ function Banners() {
                 />
               </svg>
             </span>
-            Add Banner
+            Add Product
           </Link>
         </div>
 
         <div className="flex flex-col gap-10">
           <TableTwo
-            TableBody={
-              <BannerBody
-                items={banners}
-                deleteBanners={deleteBanners}
-                changeStatus={changeStatus}
-                editBanner={(item: BannersDataResponse) => {
-                  setEditData(item); // set the banner being edited
-                  setIsModalOpen(true);
-                }}
-              />
-            }
+            TableBody={<ProductsBody items={item} />}
             header={header}
             heading="Banners"
           />
@@ -121,30 +91,19 @@ function Banners() {
           <Modal
             closeModal={() => {
               setIsModalOpen(false);
-              setEditData(null); 
+              setEditData(null);
             }}
             onSubmit={handleFormSubmit}
-            defaultValue={
-              editData
-                ? {
-                    title: editData.title,
-                    image: editData.image,
-                    link: editData.link,
-                    status: editData.status,
-                    startDate: editData.startDate,
-                    endDate: editData.endDate,
-                  }
-                : {
-                    title: '',
-                    image: null,
-                    link: '',
-                    status: 0,
-                    startDate: '',
-                    endDate: '',
-                  }
-            }
+            defaultValue={{
+              name: '',
+              description: '',
+              price: 0,
+              stock: 0,
+              images: [] as File[],
+              category: '',
+            }}
           >
-            {(formProps: ModalProps<BannerFormValues>) => <BannerModal {...formProps} />}
+            {(formProps:ModalProps<ProductFormValues>) => <ProductModal {...formProps} categories={categories}/>}
           </Modal>
         )}
       </DefaultLayout>
@@ -152,4 +111,4 @@ function Banners() {
   );
 }
 
-export default Banners;
+export default Products;

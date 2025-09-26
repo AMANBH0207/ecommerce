@@ -5,7 +5,12 @@ import {
   RegisterPayload,
 } from './types/authTypes';
 import { Apiresponse } from './types/common';
-import { BannersDataResponse, uploadBannerPayload, uploadBannerResponse } from './types/actionTypes';
+import {
+  BannersDataResponse,
+  CategoriesResponse,
+  uploadBannerPayload,
+  uploadBannerResponse,
+} from './types/actionTypes';
 import { Storage } from '../utils/localStorage';
 
 const api = axios.create({
@@ -18,7 +23,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const skipUrl = ['register-admin', 'login-admin'];
-    const user = Storage.getItem("user");
+    const user = Storage.getItem('user');
     const token = user?.token || '';
     if (!skipUrl.some((url) => config?.url?.includes(url))) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -48,7 +53,7 @@ export const loginAdmin = async (payload: LoginPayload) => {
 export const AddBanner = async (payload: uploadBannerPayload) => {
   const formData = new FormData();
   formData.append('title', payload.title);
-  formData.append('image', payload.image); // File
+  formData.append('image', payload.image);
   formData.append('link', payload.link);
   formData.append('status', payload.status.toString());
   formData.append('startDate', payload.startDate);
@@ -63,22 +68,22 @@ export const AddBanner = async (payload: uploadBannerPayload) => {
   return response.data;
 };
 
-
 // Get all banners
 export const getBanner = async () => {
-  const response = await api.get<Apiresponse<BannersDataResponse[]>>(
-    '/banner',
-  );
+  const response = await api.get<Apiresponse<BannersDataResponse[]>>('/banner');
   return response.data;
 };
 // Delete banner
 export const deleteBanner = async (id: string) => {
-  const response = await api.delete<Apiresponse<null>>("/banner/" + id);
+  const response = await api.delete<Apiresponse<null>>('/banner/' + id);
   return response.data;
-}
+};
 
 // Update banner
-export const updateBanner = async (id: string, payload: uploadBannerPayload) => {
+export const updateBanner = async (
+  id: string,
+  payload: uploadBannerPayload,
+) => {
   const formData = new FormData();
   formData.append('title', payload.title);
   formData.append('image', payload.image);
@@ -93,11 +98,38 @@ export const updateBanner = async (id: string, payload: uploadBannerPayload) => 
   );
 
   return response.data;
-}
+};
 
 // Toggle status (active/inactive)
 export const toggleBannerStatus = async (id: string) => {
-  const response = await api.patch<Apiresponse<null>>("/banner/toggle-status/" + id);
+  const response = await api.patch<Apiresponse<null>>(
+    '/banner/toggle-status/' + id,
+  );
+  return response.data;
+};
+
+export const getCategories = async () => {
+  const response = await api.get<Apiresponse<CategoriesResponse[]>>(
+    '/products/categories',
+  );
+  return response.data;
+};
+
+export const addProduct = async (payload: any) => {
+  const formData = new FormData();
+  formData.append('name', payload.name);
+  formData.append('description', payload.description);
+  formData.append('price', payload.price);
+  formData.append('stock', payload.stock);
+  formData.append('category', payload.category);
+  if (payload.images) {
+    Array.from(payload.images).forEach((file: File) => {
+      formData.append('images', file);
+    });
+  }
+  const response = await api.post<Apiresponse<null>>('/products/add', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return response.data;
 }
 

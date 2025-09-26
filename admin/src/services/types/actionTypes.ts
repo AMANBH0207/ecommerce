@@ -27,3 +27,9 @@ export interface BannersDataResponse {
     endDate: string,
     priority: number,
 }
+
+export interface CategoriesResponse {
+    _id: string,
+    name:string,
+    slug:string,
+}

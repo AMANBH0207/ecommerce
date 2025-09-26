@@ -1,36 +1,43 @@
-import { BannerFormValues, ModalProps } from '../../types/banner';
+import { ModalProps, ProductFormValues } from '../../types/banner';
 
-function BannerModal({ formState, errors, handleChange }:ModalProps<BannerFormValues>) {
+function ProductModal({
+  formState,
+  errors,
+  handleChange,
+  categories
+}: ModalProps<ProductFormValues>) {
+  
+
   return (
     <form className="w-full max-w-[600px] sm:px-4 mx-auto overflow-x-hidden">
       <div className="flex flex-col gap-5">
-        {/* Title / Bond ID */}
+        {/* Name */}
         <div className="form-group w-full">
           <label
             className="mb-2 block text-sm font-medium text-black dark:text-white"
-            htmlFor="title"
+            htmlFor="name"
           >
             Title
           </label>
-          
           <input
             className="w-full max-w-full rounded border border-stroke bg-gray py-3 px-3 text-black focus:border-primary focus:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-            name="title"
+            name="name"
             onChange={handleChange}
-            value={formState.title}
+            value={formState.name}
           />
         </div>
 
         {/* Image Upload */}
         <div className="form-group w-full">
           <label className="mb-2 block text-sm font-medium text-black dark:text-white">
-            Image
+            Images
           </label>
           <div className="relative w-full cursor-pointer rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5 overflow-hidden">
             <input
-              name="image"
+              name="images"
               type="file"
               accept="image/*"
+              multiple
               onChange={handleChange}
               className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
             />
@@ -71,19 +78,37 @@ function BannerModal({ formState, errors, handleChange }:ModalProps<BannerFormVa
           </div>
         </div>
 
-        {/* Link */}
+        {/* Description */}
         <div className="form-group w-full">
           <label
             className="mb-2 block text-sm font-medium text-black dark:text-white"
             htmlFor="link"
           >
-            Link
+            Description
+          </label>
+          <textarea
+            rows={4}
+            className="w-full max-w-full rounded border border-stroke bg-gray py-3 px-3 text-black focus:border-primary focus:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+            name="description"
+            onChange={handleChange}
+            value={formState.description || ''}
+          />
+        </div>
+
+        {/* Price */}
+        <div className="form-group w-full">
+          <label
+            className="mb-2 block text-sm font-medium text-black dark:text-white"
+            htmlFor="price"
+          >
+            Price
           </label>
           <input
             className="w-full max-w-full rounded border border-stroke bg-gray py-3 px-3 text-black focus:border-primary focus:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-            name="link"
+            name="price"
+            type="number"
             onChange={handleChange}
-            value={formState.link || ''}
+            value={formState.price}
           />
         </div>
 
@@ -93,55 +118,47 @@ function BannerModal({ formState, errors, handleChange }:ModalProps<BannerFormVa
             className="mb-2 block text-sm font-medium text-black dark:text-white"
             htmlFor="status"
           >
-            Status
+            Category
           </label>
           <div className="relative w-full rounded border border-stroke p-1.5 pr-8 dark:border-strokedark dark:bg-form-input">
             <span
-              className={`${
-                formState.status == 1 ? 'bg-[#04b20c]' : 'bg-[#e13f32]'
-              } m-1.5 flex items-center justify-center rounded border-[.5px] border-stroke py-1.5 px-2.5 text-white font-medium dark:border-strokedark`}
+              className={`m-1.5 flex items-center justify-center rounded border-[.5px] border-stroke py-1.5 px-2.5 text-white font-medium dark:border-strokedark`}
             >
-              {formState.status == 1 ? 'Active' : 'Inactive'}
+              {categories?.find((cat) => cat._id === formState.category)?.name ||
+                'Select Category'}
             </span>
+
             <select
               className="absolute inset-0 z-20 h-full w-full bg-transparent opacity-0"
-              name="status"
+              name="category"
               onChange={handleChange}
-              value={formState.status}
+              value={formState.category}
             >
-              <option value="0">Inactive</option>
-              <option value="1">Active</option>
+              <option value="">Select Category</option>
+              {categories?.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
 
-        {/* Start / End Date */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-          <div className="form-group w-full">
-            <label className="mb-2 block text-sm font-medium text-black dark:text-white">
-              Start Date
-            </label>
-            <input
-              type="date"
-              className="w-full max-w-full rounded border border-stroke bg-gray py-3 px-3 text-black focus:border-primary focus:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-              name="startDate"
-              onChange={handleChange}
-              value={formState.startDate || ''}
-            />
-          </div>
-
-          <div className="form-group w-full">
-            <label className="mb-2 block text-sm font-medium text-black dark:text-white">
-              End Date
-            </label>
-            <input
-              type="date"
-              className="w-full max-w-full rounded border border-stroke bg-gray py-3 px-3 text-black focus:border-primary focus:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-              name="endDate"
-              onChange={handleChange}
-              value={formState.endDate || ''}
-            />
-          </div>
+        {/* Stock */}
+        <div className="form-group w-full">
+          <label
+            className="mb-2 block text-sm font-medium text-black dark:text-white"
+            htmlFor="stock"
+          >
+            Stock
+          </label>
+          <input
+            className="w-full max-w-full rounded border border-stroke bg-gray py-3 px-3 text-black focus:border-primary focus:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+            name="stock"
+            type="number"
+            onChange={handleChange}
+            value={formState.stock}
+          />
         </div>
 
         {/* Errors */}
@@ -153,4 +170,4 @@ function BannerModal({ formState, errors, handleChange }:ModalProps<BannerFormVa
   );
 }
 
-export default BannerModal;
+export default ProductModal;

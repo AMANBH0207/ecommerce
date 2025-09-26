@@ -16,6 +16,7 @@ import Buttons from './pages/UiElements/Buttons';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Banners from './pages/Banners/Banners';
+import Products from './pages/Products/Products';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -54,6 +55,17 @@ function App() {
             </>
           }
         />
+
+        <Route
+         path="/products"
+          element={
+            <>
+              {/* <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" /> */}
+              <Products />
+            </>
+          }
+        />
+
         <Route
           path="/calendar"
           element={
