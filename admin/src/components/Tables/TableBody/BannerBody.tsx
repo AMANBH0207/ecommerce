@@ -6,7 +6,7 @@ function BannerBody({ items, deleteBanners, changeStatus, editBanner }) {
     <>
       {items.map((product: BannersDataResponse, key: number) => (
         <div
-          className="grid grid-cols-7 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5"
+          className="grid grid-cols-8 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5"
           key={key}
         >
           <div className="col-span-1 flex items-center">{product?.title}</div>
@@ -38,15 +38,26 @@ function BannerBody({ items, deleteBanners, changeStatus, editBanner }) {
             </p>
           </div>
           <div className="col-span-1 flex items-center">
-            <button className="text-sm text-white bg-yellow-500 p-2 rounded-md" onClick={()=>{changeStatus(product._id)}}>
-              {product?.status === 0 ? 'Active' : 'Inactive'}
-            </button>
-            <button className="ml-2 text-sm text-white bg-blue-500 p-2 rounded-md" onClick={()=>{editBanner(product)}}>
-              Update
-            </button>
-            <button className="ml-2 text-sm text-white bg-red-500 p-2 rounded-md" onClick={()=>{deleteBanners(product._id)}}>
-              Delete
-            </button>
+            <div className="flex gap-2">
+              <button
+                className="text-sm text-white bg-yellow-500 p-2 rounded-md"
+                onClick={() => changeStatus(product._id)}
+              >
+                {product?.status === 0 ? 'Active' : 'Inactive'}
+              </button>
+              <button
+                className="text-sm text-white bg-blue-500 p-2 rounded-md"
+                onClick={() => editBanner(product)}
+              >
+                Update
+              </button>
+              <button
+                className="text-sm text-white bg-red-500 p-2 rounded-md"
+                onClick={() => deleteBanners(product._id)}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       ))}

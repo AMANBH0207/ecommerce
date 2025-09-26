@@ -112,6 +112,7 @@ function Banners() {
                 }}
               />
             }
+            cols={8}
             header={header}
             heading="Banners"
           />

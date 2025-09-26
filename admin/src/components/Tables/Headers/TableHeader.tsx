@@ -1,7 +1,7 @@
 
-function TableHeader({ header }: { header: { name: string; key: string }[] }) {
+function TableHeader({ header , cols }: { header: { name: string; key: string }[], cols?: number }) {
   return (
-    <div className="grid grid-cols-7 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
+    <div className={`grid grid-cols-${cols} border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-${cols} md:px-6 2xl:px-7.5`}>
       {header.map((col) => (
         <div
           key={col.key}

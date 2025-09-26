@@ -44,10 +44,13 @@ exports.addProduct = async (req, res) => {
 
     const savedProduct = await newProduct.save();
 
+    // populate category (only name or full object as per your need)
+    const populatedProduct = await savedProduct.populate("category", "name");
+
     res.status(201).json({
       success: true,
       message: "Product added successfully",
-      data: savedProduct,
+      data: populatedProduct,
     });
   } catch (error) {
     console.error(error);
@@ -122,7 +125,6 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
-
 
 exports.getCategories = async (req, res) => {
   try {

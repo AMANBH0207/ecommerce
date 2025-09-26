@@ -133,3 +133,18 @@ export const addProduct = async (payload: any) => {
   return response.data;
 }
 
+export const getProducts = async () => {
+  const response = await api.get<Apiresponse<any>>('/products');
+  return response.data;
+}
+
+export const updateStock = async (id: string, stock: number) => {
+  const response = await api.patch<Apiresponse<null>>('/products/update-stock/' + id, { stock });
+  return response.data;
+}
+
+export const deleteProduct = async (id: string) => {
+  const response = await api.delete<Apiresponse<null>>('/products/' + id);
+  return response.data;
+}
+

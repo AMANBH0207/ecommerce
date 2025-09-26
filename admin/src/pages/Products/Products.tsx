@@ -8,32 +8,42 @@ import { Modal } from '../../components/ModalSettings';
 import ProductsBody from '../../components/Tables/TableBody/ProductsBody';
 import ProductModal from '../../components/ModalBody/ProductModal';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addProduct, getCategories } from '../../features/products/productThunks';
+import { addProduct, deleteProduct, getCategories, getProducts } from '../../features/products/productThunks';
 import { ModalProps, ProductFormValues } from '../../types/banner';
 
 function Products() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState<any | null>(null);
-  const { categories, loading } = useAppSelector((state) => state.product);
+  const { categories, loading, data } = useAppSelector((state) => state.product);
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(getCategories());
   }, [dispatch]);
-  const header = [
-    { name: 'Title', key: 'title' },
-    { name: 'Image', key: 'image' },
-    { name: 'Link', key: 'link' },
-    { name: 'Status', key: 'status' },
-    { name: 'Start Date', key: 'startDate' },
-    { name: 'End Date', key: 'endDate' },
-    { name: 'Actions', key: 'actions' },
-  ];
 
-  const item = [];
+  useEffect(() => {
+    dispatch(getProducts());
+  },[])
+
+  useEffect(() => {
+    console.log('Products data:', data);
+  },[data])
+
+  const header = [
+    { name: 'Name', key: 'name' },
+    { name: 'Images', key: 'images' },
+    { name: 'Category', key: 'category' },
+    { name: 'Price', key: 'price' },
+    { name: 'Stock', key: 'stock' },
+    { name: 'Actions', key: 'actions' }
+  ];
   const handleFormSubmit = (data: any) => {
     console.log('form data', data);
     dispatch(addProduct(data));
   };
+
+  const deleteProducts = async (id: string) => {
+    dispatch(deleteProduct(id));
+  }
 
 
 
@@ -81,8 +91,10 @@ function Products() {
 
         <div className="flex flex-col gap-10">
           <TableTwo
-            TableBody={<ProductsBody items={item} />}
+            TableBody={<ProductsBody items={data} 
+            deleteProducts={deleteProducts}/>}
             header={header}
+            cols={6}
             heading="Banners"
           />
         </div>
