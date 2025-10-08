@@ -1,6 +1,15 @@
 import { BannerFormValues, ModalProps } from '../../types/banner';
 
 function BannerModal({ formState, errors, handleChange }:ModalProps<BannerFormValues>) {
+  const bannerTypes = [
+    { value: 'slider', label: 'Slider' },
+    { value: 'static', label: 'Static' },
+    { value: 'showcase', label: 'Showcase' },
+    { value: 'mobiles', label: 'Mobiles' },
+    { value: 'laptops', label: 'Laptops' },
+  ];
+
+
   return (
     <form className="w-full max-w-[600px] sm:px-4 mx-auto overflow-x-hidden">
       <div className="flex flex-col gap-5">
@@ -111,6 +120,38 @@ function BannerModal({ formState, errors, handleChange }:ModalProps<BannerFormVa
             >
               <option value="0">Inactive</option>
               <option value="1">Active</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Status */}
+        <div className="form-group w-full">
+          <label
+            className="mb-2 block text-sm font-medium text-black dark:text-white"
+            htmlFor="status"
+          >
+            Banner Type
+          </label>
+          <div className="relative w-full rounded border border-stroke p-1.5 pr-8 dark:border-strokedark dark:bg-form-input">
+            <span
+              className={`m-1.5 flex items-center justify-center rounded border-[.5px] border-stroke py-1.5 px-2.5 text-white font-medium dark:border-strokedark`}
+            >
+              {bannerTypes?.find((cat) => cat.value === formState.bannerType)?.label ||
+                'Select Category'}
+            </span>
+
+            <select
+              className="absolute inset-0 z-20 h-full w-full bg-transparent opacity-0"
+              name="bannerType"
+              onChange={handleChange}
+              value={formState.bannerType}
+            >
+              <option value="">Select Category</option>
+              {bannerTypes?.map((type) => (
+                <option value={type.value} key={type.value}>
+                  {type.label}
+                </option>
+              ))}
             </select>
           </div>
         </div>

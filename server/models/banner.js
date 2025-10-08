@@ -5,6 +5,7 @@ const bannerSchema = mongoose.Schema({
   image: { type: String, required: true },
   publicId: { type: String, required: true }, // Cloudinary public_id
   link: { type: String, required: true },
+  bannerType:{type: String},
   status: { type: Number, default: 0 },
   startDate: { type: Date },
   endDate: { type: Date },

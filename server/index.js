@@ -12,8 +12,11 @@ const productRoutes = require('./routes/productRoutes')
 app.use(express.json())
 connectDb();
 app.use(cors())
-
+//user Routes
 app.use("/api/users", userRoutes);
+app.use("/api/users/banner", bannerRoutes);
+app.use("/api/users/products", productRoutes);
+//admin Routes
 app.use("/api/admin", adminRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/admin/banner', bannerRoutes);

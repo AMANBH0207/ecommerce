@@ -22,19 +22,28 @@ export const Modal = ({
     return errorFields.length === 0;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, files } = e.target;
+ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, files, value } = e.target;
 
-  if (name === 'images' && files) {
-    setFormState((prev) => ({
-      ...prev,
-      images: [...(prev.images || []), ...Array.from(files)],
-    }));
+  if (files) {
+    if (name === "images") {
+      // Multiple images (FileList → File[])
+      setFormState((prev) => ({
+        ...prev,
+        images: [...(prev.images || []), ...Array.from(files)],
+      }));
+    } else if (name === "image") {
+      // Single image
+      setFormState((prev) => ({
+        ...prev,
+        image: files[0], // just take the first file
+      }));
+    }
   } else {
-    const target = e.target as HTMLInputElement;
+    // Non-file inputs (text, number, date, etc.)
     setFormState((prev) => ({
       ...prev,
-      [name]: target.value,
+      [name]: value,
     }));
   }
 };

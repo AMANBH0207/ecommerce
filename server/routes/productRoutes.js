@@ -6,8 +6,9 @@ const upload = require("../middleware/upload");
 
 router.post("/add", protectRoute, isAdmin, upload.array("images", 5), productController.addProduct);
 router.get("/", productController.getProducts);
-router.delete("/:id", productController.deleteProduct);
-router.patch("/update-stock/:id", protectRoute, isAdmin, productController.updateStock);
+router.delete("/:id",protectRoute, isAdmin, productController.deleteProduct);
+router.patch("/update-product/:id", protectRoute, isAdmin, productController.updateProduct);
 router.get("/categories",  productController.getCategories)
+router.get("/getTopProducts", productController.getTopProducts)
 
 module.exports = router;

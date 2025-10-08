@@ -1,6 +1,5 @@
 
-function ProductsBody({ items, deleteProducts }) {
-  console.log('Items in ProductsBody:', items);
+function ProductsBody({ items, deleteProducts, updateProduct }) {
   return (
     <>
       {items?.map((product, key: number) => (
@@ -39,7 +38,7 @@ function ProductsBody({ items, deleteProducts }) {
             <button className="text-sm text-white bg-yellow-500 p-2 rounded-md">
               {product?.status === 0 ? 'Active' : 'Inactive'}
             </button>
-            <button className="ml-2 text-sm text-white bg-blue-500 p-2 rounded-md">
+            <button className="ml-2 text-sm text-white bg-blue-500 p-2 rounded-md" onClick={()=>{updateProduct(product)}}>
               Update
             </button>
             <button className="ml-2 text-sm text-white bg-red-500 p-2 rounded-md" onClick={() => deleteProducts(product._id)}>

@@ -5,7 +5,7 @@ import {
   deleteProduct,
   getCategories,
   getProducts,
-  updateStock,
+  updateProduct,
 } from './productThunks';
 
 export interface ProductState {
@@ -70,11 +70,11 @@ const productSlice = createSlice({
 
     // ✅ Update Stock
     builder
-      .addCase(updateStock.pending, (state) => {
+      .addCase(updateProduct.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateStock.fulfilled, (state, action) => {
+      .addCase(updateProduct.fulfilled, (state, action) => {
         state.loading = false;
         // Update stock in local state
         if (state.data) {
@@ -85,7 +85,7 @@ const productSlice = createSlice({
           );
         }
       })
-      .addCase(updateStock.rejected, (state, action) => {
+      .addCase(updateProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

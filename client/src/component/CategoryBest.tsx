@@ -1,8 +1,13 @@
 import prod18 from "../assets/images/prod18.png.png";
 import prod20 from "../assets/images/prod20.png.png";
 import prod26 from "../assets/images/prod26.png.png";
+import type { BannersData } from "../services/types/actionTypes";
 
-function CategoryBest() {
+interface CategoryBestProps {
+  banners: BannersData[];
+}
+
+function CategoryBest({ banners }: CategoryBestProps) {
   return (
     <>
       <div className="p-4 bg-white rounded-lg">
@@ -17,19 +22,22 @@ function CategoryBest() {
         </div>
 
         {/* Top Section with Main Image + Categories */}
-        <div className="flex flex-col md:flex-row p-4 border-b border-gray-300 gap-4">
+        <div className="flex flex-col md:flex-row p-2 md:p-4 border-b border-gray-300 gap-4">
           {/* Left Big Image */}
-          <img
-            className="rounded-lg w-full md:w-1/2 object-cover"
-            src={prod18}
-          />
+          {banners?.length > 0 && (
+            <img
+              className="rounded-lg w-full md:w-1/2 h-[200px] object-cover"
+              src={banners[0].image}
+              alt="Banner"
+            />
+          )}
 
           {/* Right Grid of Items */}
           <div className="w-full md:w-1/2 grid grid-cols-2 sm:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex items-center gap-2">
+              <div key={i} className="flex items-center justify-center gap-2">
                 <div>
-                  <p>Speaker</p>
+                  <p>IOS</p>
                   <span className="text-gray-500 text-sm">19 items</span>
                 </div>
                 <img className="w-12 h-12 object-contain" src={prod20} />

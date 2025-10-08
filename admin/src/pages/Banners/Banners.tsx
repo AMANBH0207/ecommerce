@@ -23,10 +23,6 @@ function Banners() {
   const { banners, loading, error } = useAppSelector((state) => state.banner);
   const [editData, setEditData] = useState<any | null>(null);
   const dispatch = useAppDispatch();
-  
-  useEffect(() => {
-    console.log('Banners data:', editData);
-  },[editData])
 
   const handleFormSubmit = (data: any) => {
     if (editData) {
@@ -107,7 +103,7 @@ function Banners() {
                 deleteBanners={deleteBanners}
                 changeStatus={changeStatus}
                 editBanner={(item: BannersDataResponse) => {
-                  setEditData(item); // set the banner being edited
+                  setEditData(item);
                   setIsModalOpen(true);
                 }}
               />
@@ -131,6 +127,7 @@ function Banners() {
                     title: editData.title,
                     image: editData.image,
                     link: editData.link,
+                    bannerType: editData.bannerType,
                     status: editData.status,
                     startDate: editData.startDate,
                     endDate: editData.endDate,
@@ -139,6 +136,7 @@ function Banners() {
                     title: '',
                     image: null,
                     link: '',
+                    bannerType:'',
                     status: 0,
                     startDate: '',
                     endDate: '',

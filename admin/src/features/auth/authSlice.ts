@@ -27,6 +27,7 @@ const authSlice = createSlice({
         logout:(state)=>{
             state.token=null;
             state.user=null;
+            Storage.removeItem("user")
         },
         clearError: (state) => {
       state.error = null;

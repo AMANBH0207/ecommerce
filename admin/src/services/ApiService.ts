@@ -6,6 +6,7 @@ import {
 } from './types/authTypes';
 import { Apiresponse } from './types/common';
 import {
+  AddProductResponse,
   BannersDataResponse,
   CategoriesResponse,
   uploadBannerPayload,
@@ -55,10 +56,10 @@ export const AddBanner = async (payload: uploadBannerPayload) => {
   formData.append('title', payload.title);
   formData.append('image', payload.image);
   formData.append('link', payload.link);
+  formData.append('bannerType', payload.bannerType);
   formData.append('status', payload.status.toString());
   formData.append('startDate', payload.startDate);
   formData.append('endDate', payload.endDate);
-
   const response = await api.post<Apiresponse<uploadBannerResponse>>(
     '/banner/add',
     formData,
@@ -120,6 +121,7 @@ export const addProduct = async (payload: any) => {
   formData.append('name', payload.name);
   formData.append('description', payload.description);
   formData.append('price', payload.price);
+  formData.append('discountedPrice', payload.discountedPrice);
   formData.append('stock', payload.stock);
   formData.append('category', payload.category);
   if (payload.images) {
@@ -127,24 +129,50 @@ export const addProduct = async (payload: any) => {
       formData.append('images', file);
     });
   }
-  const response = await api.post<Apiresponse<null>>('/products/add', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  const response = await api.post<Apiresponse<AddProductResponse[]>>(
+    '/products/add',
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    },
+  );
   return response.data;
-}
+};
 
 export const getProducts = async () => {
   const response = await api.get<Apiresponse<any>>('/products');
   return response.data;
-}
+};
 
-export const updateStock = async (id: string, stock: number) => {
-  const response = await api.patch<Apiresponse<null>>('/products/update-stock/' + id, { stock });
+export const updateProduct = async (id: string, payload: any) => {
+  const formData = new FormData();
+
+  if (payload.name) formData.append('name', payload.name);
+  if (payload.description) formData.append('description', payload.description);
+  if (payload.price) formData.append('price', payload.price);
+  if (payload.discountedPrice)
+    formData.append('discountedPrice', payload.discountedPrice);
+  if (payload.stock) formData.append('stock', payload.stock);
+  if (payload.category) formData.append('category', payload.category);
+
+  if (payload.images && payload.images.length > 0) {
+    Array.from(payload.images).forEach((file: File) => {
+      formData.append('images', file);
+    });
+  }
+
+  const response = await api.patch<Apiresponse<any>>(
+    `/products/update-product/${id}`,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    },
+  );
+
   return response.data;
-}
+};
 
 export const deleteProduct = async (id: string) => {
   const response = await api.delete<Apiresponse<null>>('/products/' + id);
   return response.data;
-}
-
+};

@@ -6,7 +6,8 @@ const Categories = require("../models/productcategories");
 // Add Product
 exports.addProduct = async (req, res) => {
   try {
-    const { name, description, price, stock, category } = req.body;
+    const { name, description, price, stock, category, discountedPrice } =
+      req.body;
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({
         success: false,
@@ -40,6 +41,7 @@ exports.addProduct = async (req, res) => {
       stock,
       images,
       category,
+      discountedPrice,
     });
 
     const savedProduct = await newProduct.save();
@@ -66,7 +68,7 @@ exports.addProduct = async (req, res) => {
 exports.getProducts = async (req, res) => {
   try {
     const products = await Product.find()
-      .populate("category", "name")
+      .populate("category", "name slug")
       .sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, data: products });
@@ -75,25 +77,65 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// Toggle stock status
-exports.updateStock = async (req, res) => {
+exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { stock } = req.body;
 
-    const product = await Product.findById(id);
-    if (!product)
+    let product = await Product.findById(id);
+    if (!product) {
       return res
         .status(404)
         .json({ success: false, message: "Product not found" });
+    }
 
-    product.stock = stock;
-    await product.save();
+    // If new images are uploaded
+    let images = product.images;
+    if (req.files && req.files.length > 0) {
+      if (images && images.length > 0) {
+        for (const img of images) {
+          await cloudinary.uploader.destroy(img.public_id);
+        }
+      }
 
-    res
-      .status(200)
-      .json({ success: true, message: "Stock updated", data: product });
+      // Upload new images
+      const uploadPromises = req.files.map(
+        (file) =>
+          new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              { folder: "products" },
+              (error, result) => {
+                if (error) reject(error);
+                else
+                  resolve({
+                    url: result.secure_url,
+                    public_id: result.public_id,
+                  });
+              }
+            );
+            streamifier.createReadStream(file.buffer).pipe(stream);
+          })
+      );
+      images = await Promise.all(uploadPromises);
+    }
+
+    // Update only the fields sent in req.body
+    const updatedData = {
+      ...req.body,
+      ...(req.files && req.files.length > 0 ? { images } : {}), // update images only if new ones uploaded
+    };
+
+    product = await Product.findByIdAndUpdate(id, updatedData, {
+      new: true, // return updated product
+      runValidators: true, // validate against schema
+    }).populate("category", "name");
+
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      data: product,
+    });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
@@ -136,6 +178,45 @@ exports.getCategories = async (req, res) => {
         data: categories,
       });
     }
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Get Products
+exports.getTopProducts = async (req, res) => {
+  try {
+    const products = await Product.aggregate([
+  {
+    $lookup: {
+      from: "categories",
+      localField: "category",
+      foreignField: "_id",
+      as: "category",
+    },
+  },
+  { $unwind: "$category" },
+  {
+    $project: {
+      name: 1,
+      image: { $arrayElemAt: ["$images", 0] },
+      "category.name": 1,
+      "category.slug": 1,
+      createdAt: 1,
+    },
+  },
+  { $sort: { createdAt: -1 } },
+  { $limit: 6 },
+]);
+
+
+    const topGrouped = {
+      mobiles: products.filter(p => p.category.slug === "mobiles"),
+
+    };
+
+
+    res.status(200).json({ success: true, data: topGrouped });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -8,13 +8,22 @@ import { Modal } from '../../components/ModalSettings';
 import ProductsBody from '../../components/Tables/TableBody/ProductsBody';
 import ProductModal from '../../components/ModalBody/ProductModal';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addProduct, deleteProduct, getCategories, getProducts } from '../../features/products/productThunks';
+import {
+  addProduct,
+  deleteProduct,
+  getCategories,
+  getProducts,
+  updateProduct,
+} from '../../features/products/productThunks';
 import { ModalProps, ProductFormValues } from '../../types/banner';
+import { AddProductResponse } from '../../services/types/actionTypes';
 
 function Products() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editData, setEditData] = useState<any | null>(null);
-  const { categories, loading, data } = useAppSelector((state) => state.product);
+  const [editData, setEditData] = useState<AddProductResponse | null>(null);
+  const { categories, loading, data } = useAppSelector(
+    (state) => state.product,
+  );
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(getCategories());
@@ -22,11 +31,11 @@ function Products() {
 
   useEffect(() => {
     dispatch(getProducts());
-  },[])
+  }, []);
 
   useEffect(() => {
     console.log('Products data:', data);
-  },[data])
+  }, [data]);
 
   const header = [
     { name: 'Name', key: 'name' },
@@ -34,20 +43,19 @@ function Products() {
     { name: 'Category', key: 'category' },
     { name: 'Price', key: 'price' },
     { name: 'Stock', key: 'stock' },
-    { name: 'Actions', key: 'actions' }
+    { name: 'Actions', key: 'actions' },
   ];
   const handleFormSubmit = (data: any) => {
-    console.log('form data', data);
-    dispatch(addProduct(data));
+    if (editData) {
+      dispatch(updateProduct({ id: editData._id, payload: data }));
+    } else {
+      dispatch(addProduct(data));
+    }
   };
 
   const deleteProducts = async (id: string) => {
     dispatch(deleteProduct(id));
-  }
-
-
-
-
+  };
 
   return (
     <>
@@ -91,8 +99,16 @@ function Products() {
 
         <div className="flex flex-col gap-10">
           <TableTwo
-            TableBody={<ProductsBody items={data} 
-            deleteProducts={deleteProducts}/>}
+            TableBody={
+              <ProductsBody
+                items={data}
+                deleteProducts={deleteProducts}
+                updateProduct={(item: AddProductResponse) => {
+                  setEditData(item);
+                  setIsModalOpen(true);
+                }}
+              />
+            }
             header={header}
             cols={6}
             heading="Banners"
@@ -106,16 +122,31 @@ function Products() {
               setEditData(null);
             }}
             onSubmit={handleFormSubmit}
-            defaultValue={{
-              name: '',
-              description: '',
-              price: 0,
-              stock: 0,
-              images: [] as File[],
-              category: '',
-            }}
+            defaultValue={
+              editData
+                ? {
+                    name: editData.name,
+                    description: editData.description,
+                    price: editData.price,
+                    discountedPrice: editData.discountedPrice,
+                    stock: editData.stock,
+                    images: editData.images,
+                    category: editData.category._id,
+                  }
+                : {
+                    name: '',
+                    description: '',
+                    price: 0,
+                    discountedPrice: 0,
+                    stock: 0,
+                    images: [] as File[],
+                    category: '',
+                  }
+            }
           >
-            {(formProps:ModalProps<ProductFormValues>) => <ProductModal {...formProps} categories={categories}/>}
+            {(formProps: ModalProps<ProductFormValues>) => (
+              <ProductModal {...formProps} categories={categories} />
+            )}
           </Modal>
         )}
       </DefaultLayout>

@@ -112,6 +112,25 @@ function ProductModal({
           />
         </div>
 
+        {/* Price */}
+        <div className="form-group w-full">
+          <label
+            className="mb-2 block text-sm font-medium text-black dark:text-white"
+            htmlFor="price"
+          >
+           Discounted Price
+          </label>
+          <input
+            className="w-full max-w-full rounded border border-stroke bg-gray py-3 px-3 text-black focus:border-primary focus:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+            name="discountedPrice"
+            type="number"
+            onChange={handleChange}
+            value={formState.discountedPrice}
+          />
+        </div>
+
+
+
         {/* Status */}
         <div className="form-group w-full">
           <label

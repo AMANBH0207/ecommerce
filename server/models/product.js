@@ -4,6 +4,7 @@ const ProductSchema = mongoose.Schema({
   name: { type: String, required: true },
   description: String,
   price: Number,
+  discountedPrice:Number,
   stock: { type: Number, required: true, default: 0 }, // track stock
   images: [
   {

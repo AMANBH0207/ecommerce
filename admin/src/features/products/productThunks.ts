@@ -3,7 +3,7 @@ import { getCategories as getCategoriesAPI } from '../../services/ApiService';
 import {
   addProduct as addProductAPI,
   getProducts as getProductsAPI,
-  updateStock as updateStockAPI,
+  updateProduct as updateProductAPI,
   deleteProduct as deleteProductAPI,
 } from '../../services/ApiService';
 import { ProductFormValues } from '../../types/banner';
@@ -40,11 +40,12 @@ export const getProducts = createAsyncThunk(
   },
 );
 
-export const updateStock = createAsyncThunk(
-  'product/updateStock',
-  async ({ id, stock }: { id: string; stock: number }, { rejectWithValue }) => {
+export const updateProduct = createAsyncThunk(
+  "product/updateProduct",
+  async ({ id, payload }: { id: string; payload: any }, { rejectWithValue }) => {
     try {
-      const response = await updateStockAPI(id, stock);
+       console.log("payload", id, payload)
+      const response = await updateProductAPI(id, payload);
       if (response.success) {
         return response.data;
       } else {
@@ -53,7 +54,7 @@ export const updateStock = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
-  },
+  }
 );
 
 export const deleteProduct = createAsyncThunk(

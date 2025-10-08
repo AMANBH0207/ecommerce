@@ -1,6 +1,7 @@
 import axios, { type AxiosRequestHeaders } from "axios";
 import type { LoginPayload, LoginRegisterResponse, RegisterPayload} from "./types/authTypes";
 import type { ApiResponse } from "./types/common";
+import type { BannersDataResponse } from "./types/actionTypes";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
@@ -33,12 +34,18 @@ api.interceptors.request.use(
 );
 
 export const registerUser = async (body: RegisterPayload) => {
-  const response = await api.post<ApiResponse<LoginRegisterResponse>>("users/register", body);
+  const response = await api.post<ApiResponse<LoginRegisterResponse>>("/register", body);
   return response.data;
 };
 
 export const login = async (body: LoginPayload) => {
-  const response = await api.post<ApiResponse<LoginRegisterResponse>>("users/login", body);
+  const response = await api.post<ApiResponse<LoginRegisterResponse>>("/login", body);
+  return response.data;
+};
+
+// Get all banners
+export const getBanner = async () => {
+  const response = await api.get<ApiResponse<BannersDataResponse>>('/banner/homepage');
   return response.data;
 };
 

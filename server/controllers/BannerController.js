@@ -4,8 +4,7 @@ const streamifier = require("streamifier");
 
 exports.addBanner = async (req, res) => {
   try {
-    const { title, link, status, startDate, endDate } = req.body;
-
+    const { title, link, bannerType, status, startDate, endDate } = req.body;
     if (!req.file) {
       return res
         .status(400)
@@ -33,8 +32,9 @@ exports.addBanner = async (req, res) => {
     const banner = new Banner({
       title,
       image: uploadResult.secure_url,
-      publicId: uploadResult.public_id, // save the Cloudinary ID
+      publicId: uploadResult.public_id,
       link,
+      bannerType,
       status,
       startDate,
       endDate,
@@ -51,6 +51,30 @@ exports.addBanner = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+exports.getHomepageBanners = async (req, res) => {
+  try {
+    // Fetch only active banners and select specific fields
+    const banners = await Banner.find({status:1})
+      .select("title image link bannerType priority startDate endDate"); 
+
+        console.log("herer is the banners",banners)
+    // Group by type
+    const grouped = {
+      slider: banners.filter(b => b.bannerType === "slider"),
+      static: banners.filter(b => b.bannerType === "static"),
+      showcase: banners.filter(b => b.bannerType === "showcase"),
+      mobiles: banners.filter(b => b.bannerType === "mobiles"),
+    };
+
+    res.status(200).json({ success: true, data: grouped });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+
 
 exports.getBanners = async (req, res) => {
   try {
