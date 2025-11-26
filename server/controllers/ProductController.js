@@ -183,7 +183,7 @@ exports.getCategories = async (req, res) => {
   }
 };
 
-// Get Products
+// Get Top Products
 exports.getTopProducts = async (req, res) => {
   try {
     const products = await Product.aggregate([
@@ -203,6 +203,8 @@ exports.getTopProducts = async (req, res) => {
       "category.name": 1,
       "category.slug": 1,
       createdAt: 1,
+        price: 1,
+        discountedPrice:1,
     },
   },
   { $sort: { createdAt: -1 } },
@@ -217,6 +219,24 @@ exports.getTopProducts = async (req, res) => {
 
 
     res.status(200).json({ success: true, data: topGrouped });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Get Single Product by ID
+exports.getSingleProduct = async (req, res) => {
+  try {
+    const { id } = req.params; // get id from URL params
+
+    const product = await Product.findById(id)
+      .populate("category", "name slug");
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    res.status(200).json({ success: true, data: product });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -9,6 +9,7 @@ router.get("/", productController.getProducts);
 router.delete("/:id",protectRoute, isAdmin, productController.deleteProduct);
 router.patch("/update-product/:id", protectRoute, isAdmin, productController.updateProduct);
 router.get("/categories",  productController.getCategories)
-router.get("/getTopProducts", productController.getTopProducts)
+router.get("/gettopproducts", productController.getTopProducts)
+router.get("/getsingleproduct/:id", productController.getSingleProduct);
 
 module.exports = router;

@@ -3,9 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../component/Modal"; // ✅ Import reusable modal
 import prod26 from "../assets/images/prod26.png.png";
+import { useAppSelector } from "../store/hooks";
 
 function CartCard() {
   // Example product list
+  const cart = useAppSelector((state) => state.cartReducer.items);
+  console.log("cart items:", cart);
+
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -30,23 +34,23 @@ function CartCard() {
     },
   ]);
   const [savedAddresses, setSavedAddresses] = useState([
-  {
-    id: 1,
-    label: "Home",
-    name: "Aman",
-    pincode: "249202",
-    details: "109a, Meeranagar gali no7 near reliance, Rishikesh",
-  },
-  {
-    id: 2,
-    label: "Office",
-    name: "Aman",
-    pincode: "110001",
-    details: "4th Floor, Tower B, Cyber City, Gurugram",
-  },
-]);
+    {
+      id: 1,
+      label: "Home",
+      name: "Aman",
+      pincode: "249202",
+      details: "109a, Meeranagar gali no7 near reliance, Rishikesh",
+    },
+    {
+      id: 2,
+      label: "Office",
+      name: "Aman",
+      pincode: "110001",
+      details: "4th Floor, Tower B, Cyber City, Gurugram",
+    },
+  ]);
 
-const [selectedAddress, setSelectedAddress] = useState(1);
+  const [selectedAddress, setSelectedAddress] = useState(1);
 
   // Quantity state for each product
   const [quantities, setQuantities] = useState(products.map(() => 1));
@@ -114,15 +118,15 @@ const [selectedAddress, setSelectedAddress] = useState(1);
     <>
       {address}
 
-      {products.map((product, index) => (
+      {cart.map((product, index) => (
         <div
-          key={product.id}
+          key={product._id}
           className="p-3 flex flex-col sm:flex-row gap-3 items-center sm:items-start bg-gray-100 rounded-lg shadow mb-4"
         >
           {/* Product Image */}
           <img
-            src={product.img}
-            alt={product.name}
+            src={product?.images[0]?.url}
+            alt={product?.name}
             className="w-24 h-24 object-contain"
           />
 
@@ -133,10 +137,10 @@ const [selectedAddress, setSelectedAddress] = useState(1);
               <p className="font-medium text-sm sm:text-base">{product.name}</p>
               <div className="flex justify-center sm:justify-start items-center gap-2 mt-1">
                 <span className="text-red-500 font-bold text-sm sm:text-base">
-                  ₹ {product.price.toLocaleString()}
+                  ₹ {product.discountedPrice.toLocaleString()}
                 </span>
                 <span className="text-gray-500 line-through text-xs sm:text-sm">
-                  ₹ {product.oldPrice.toLocaleString()}
+                  ₹ {product.price.toLocaleString()}
                 </span>
               </div>
             </div>
@@ -146,17 +150,13 @@ const [selectedAddress, setSelectedAddress] = useState(1);
               <button
                 onClick={() => decrease(index)}
                 disabled={quantities[index] === 1}
-                className={`px-2 py-1 border rounded text-sm ${
-                  quantities[index] === 1
-                    ? "opacity-50 cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
+                className={`px-2 py-1 border rounded text-sm ${"opacity-50 cursor-not-allowed"}`}
               >
                 -
               </button>
-              <span className="px-3">{quantities[index]}</span>
+              <span className="px-3">0</span>
               <button
-                onClick={() => increase(index)}
+                // onClick={() => increase(index)}
                 className="px-2 py-1 border rounded text-sm cursor-pointer"
               >
                 +
@@ -164,17 +164,24 @@ const [selectedAddress, setSelectedAddress] = useState(1);
             </div>
 
             {/* Stock Info */}
-            <div className="flex items-center justify-center sm:justify-start gap-1 mt-2 text-green-600 text-sm">
-              <span>✔</span>
-              <span>In stock</span>
-            </div>
+            {product?.stock > 0 ? (
+              <div className="flex items-center justify-center sm:justify-start gap-1 mt-2 text-green-600 text-sm">
+                <span>✔</span>
+                <span>In stock</span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center sm:justify-start gap-1 mt-2 text-red-600 text-sm">
+                <span>✖</span>
+                <span>Out of stock</span>
+              </div>
+            )}
 
             {/* Actions */}
             <div className="flex items-center justify-center sm:justify-start gap-3 mt-3">
-              <button className="flex cursor-pointer items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 font-medium text-xs sm:text-sm border border-blue-200 hover:bg-blue-100 hover:shadow">
+              {/* <button className="flex cursor-pointer items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 font-medium text-xs sm:text-sm border border-blue-200 hover:bg-blue-100 hover:shadow">
                 <FontAwesomeIcon icon={faHeart} />
                 Move to Wishlist
-              </button>
+              </button> */}
               <button
                 onClick={() => handleRemoveClick(product.id)}
                 className="flex cursor-pointer items-center gap-2 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 font-medium text-xs sm:text-sm border border-red-200 hover:bg-red-100 hover:shadow"
@@ -207,8 +214,7 @@ const [selectedAddress, setSelectedAddress] = useState(1);
         onClose={() => setIsAddressModalOpen(false)}
         title="Change Delivery Address"
         confirmText="Confirm"
-
-        cancelText={undefined} 
+        cancelText={undefined}
         onConfirm={() => {
           console.log("Selected Address:", selectedAddress);
           setIsAddressModalOpen(false);

@@ -1,13 +1,15 @@
-import prod18 from "../assets/images/prod18.png.png";
 import prod20 from "../assets/images/prod20.png.png";
-import prod26 from "../assets/images/prod26.png.png";
-import type { BannersData } from "../services/types/actionTypes";
+import type { BannersData, topProduct } from "../services/types/actionTypes";
+import { useNavigate } from "react-router-dom";
 
 interface CategoryBestProps {
   banners: BannersData[];
+  products: topProduct[]
 }
 
-function CategoryBest({ banners }: CategoryBestProps) {
+function CategoryBest({ banners, products }: CategoryBestProps) {
+  const navigate = useNavigate()
+
   return (
     <>
       <div className="p-4 bg-white rounded-lg">
@@ -48,25 +50,29 @@ function CategoryBest({ banners }: CategoryBestProps) {
 
         {/* Bottom Product List */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 p-4">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="text-center cursor-pointer">
+          {/* {[...Array(6)].map((_, i) => ( */}
+
+          {products?.map((item,i)=>(
+            <div key={i} className="text-center cursor-pointer" onClick={()=>navigate(`/product/${item._id}`)}>
               <div>
                 <img
-                  className="mx-auto w-28 sm:w-32 object-contain"
-                  src={prod26}
+                  className="mx-auto w-28 h-40 sm:w-32 sm:h-50 object-contain"
+                  src={item?.image?.url}
                 />
-                <p className="mt-2 text-sm">Honor 9x 128GB, 6GB</p>
+                <p className="mt-2 text-sm">{item?.name}</p>
               </div>
               <div className="flex justify-center items-center gap-2 mt-2">
                 <p className="text-red-500 font-bold text-sm sm:text-base">
-                  ₹ 25,999
+                 {item.discountedPrice}
                 </p>
                 <span className="text-gray-500 line-through text-xs sm:text-sm">
-                  ₹ 28,999
+                  {item?.price}
                 </span>
               </div>
             </div>
           ))}
+            
+          {/* ))} */}
         </div>
       </div>
     </>

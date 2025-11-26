@@ -27,3 +27,41 @@ export interface uploadBannerResponse {
       endDate: string;
       priority: number;
 }
+
+interface categories{
+    name: string;
+    slug: string;
+}
+
+interface productImage{
+      url: string;
+      public_id: string;
+      _id: string
+}
+
+export interface topProduct{
+    _id: string;
+    name: string;
+    category: categories;
+    createdAt: string;
+    image: productImage;
+    discountedPrice:number;
+    price:number;
+}
+
+export interface topCategoriesResponse {
+    mobiles:topProduct[];
+}
+
+export interface singleProductResponse {
+    _id: string;
+    name: string;
+    description: string;
+    price: number;
+    discountedPrice: number;
+    stock: number;
+    images: productImage[];
+    category: categories
+    createdAt: string,
+    }
+

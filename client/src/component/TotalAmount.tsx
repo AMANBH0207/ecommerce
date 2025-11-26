@@ -1,23 +1,30 @@
+import { useAppSelector } from "../store/hooks";
+
 function TotalAmount() {
+  const {totalAmount, discountedAmount, deliveryCharge} = useAppSelector((state) => state.cartReducer);
+
+  console.log("total amount in total amount component:", totalAmount ,discountedAmount);
+
+
   return (
     <div className="border-2 border-green-500 p-4 rounded-lg">
       <h6 className="font-bold mb-3">Order Summary</h6>
       <div className="py-4">
         <div className="p-2 border-b border-gray-300 flex justify-between">
           <span className="text-gray-500">Sub Total:</span>
-          <span className="font-bold">₹10000</span>
+          <span className="font-bold">₹{totalAmount}</span>
         </div>
         <div className="p-2 border-b border-gray-300 flex justify-between">
-          <span className="text-gray-500">Shipping estimate:</span>
-          <span className="font-bold">₹6000</span>
+          <span className="text-gray-500">Discount:</span>
+          <span className="font-bold text-green-500"> - ₹{totalAmount-discountedAmount}</span>
         </div>
         <div className="p-2 border-b border-gray-300 flex justify-between">
-          <span className="text-gray-500">GST:</span>
-          <span className="font-bold">₹200</span>
+          <span className="text-gray-500">Delivery Charges</span>
+          <span className="font-bold">₹{deliveryCharge}</span>
         </div>
         <div className="p-2 flex justify-between">
           <span className="font-bold">ORDER TOTAL:</span>
-          <span className="font-bold">₹16200</span>
+          <span className="font-bold">₹{discountedAmount}</span>
         </div>
       </div>
       <div className="text-center p-6">

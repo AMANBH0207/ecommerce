@@ -10,13 +10,15 @@ import SaleBanners from "../component/SaleBanners";
 import TopCategories from "../component/TopCategories";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getBanners } from "../features/banners/bannerThunks";
+import { getTopProducts } from "../features/products/productThunks";
 
 function HomePage() {
   const dispatch = useAppDispatch();
   const { banners, loading, error } = useAppSelector((state) => state.banner);
-
+  const { topProduct, loading:productLoading, error:productError } = useAppSelector((state) => state.product);
   useEffect(() => {
     dispatch(getBanners());
+    dispatch(getTopProducts());
   }, []);
 
   return (
@@ -88,7 +90,7 @@ function HomePage() {
       </div>
 
       <div className="pt-2">
-        <CategoryBest banners={banners?.mobiles}/>
+        <CategoryBest banners={banners?.mobiles} products={topProduct.mobiles}/>
       </div>
       <div className="pt-2">
         {/* <CategoryBest /> */}

@@ -1,7 +1,7 @@
 import axios, { type AxiosRequestHeaders } from "axios";
 import type { LoginPayload, LoginRegisterResponse, RegisterPayload} from "./types/authTypes";
 import type { ApiResponse } from "./types/common";
-import type { BannersDataResponse } from "./types/actionTypes";
+import type { BannersDataResponse, singleProductPayload, singleProductResponse, topCategoriesResponse } from "./types/actionTypes";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
@@ -49,3 +49,16 @@ export const getBanner = async () => {
   return response.data;
 };
 
+// Get top products
+export const getTopProducts = async () => {
+  const response = await api.get<ApiResponse<topCategoriesResponse>>('/products/gettopproducts');
+  return response.data;
+};
+
+
+// Get top products
+
+export const getSingleProduct = async (body:string|undefined) => {
+  const response = await api.get<ApiResponse<singleProductResponse>>(`/products/getsingleproduct/${body}`);
+  return response.data;
+};

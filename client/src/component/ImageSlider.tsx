@@ -30,9 +30,22 @@ function ImageSlider({ banners }: BannersProps) {
                   alt={`Slider ${banner._id}`}
                   className="w-full h-full object-cover rounded-lg"
                 />
+
+                {/* Responsive Bottom-Left Button */}
                 <a
                   href={banner.link}
-                  className="absolute bottom-15 left-30 transform -translate-x-1/2 bg-white font-bold text-black px-6 py-2 rounded-sm border-black-200 border-1 hover:bg-green-600 hover:text-white transition"
+                  className="
+                    absolute 
+                    bottom-5 sm:bottom-6 md:bottom-10 
+                    left-3 sm:left-6 md:left-10 
+                    bg-white font-semibold text-black 
+                    px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-2.5 
+                    rounded-md border border-gray-300
+                    text-sm sm:text-base md:text-lg
+                    hover:bg-green-600 hover:text-white 
+                    transition-all duration-300 ease-in-out
+                    shadow-md hover:shadow-lg
+                  "
                 >
                   Buy Now
                 </a>
