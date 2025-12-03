@@ -19,5 +19,7 @@ export interface LoginPayload {
   password:string;
 }
 
-
+export interface submitOrderPayload {
+  amount: number
+}
 

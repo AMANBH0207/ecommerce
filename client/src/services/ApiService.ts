@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestHeaders } from "axios";
-import type { LoginPayload, LoginRegisterResponse, RegisterPayload} from "./types/authTypes";
-import type { ApiResponse } from "./types/common";
+import type { LoginPayload, LoginRegisterResponse, RegisterPayload, submitOrder, submitOrderPayload} from "./types/authTypes";
+import type { ApiResponse, submitOrderResponse } from "./types/common";
 import type { BannersDataResponse, singleProductPayload, singleProductResponse, topCategoriesResponse } from "./types/actionTypes";
 
 const api = axios.create({
@@ -62,3 +62,9 @@ export const getSingleProduct = async (body:string|undefined) => {
   const response = await api.get<ApiResponse<singleProductResponse>>(`/products/getsingleproduct/${body}`);
   return response.data;
 };
+
+
+export const createOrder = async (body:submitOrderPayload) =>{
+  const response = await api.post<submitOrderResponse>("/razorpay/create-order",body)
+  return response.data;
+}

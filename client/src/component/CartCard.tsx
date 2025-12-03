@@ -4,35 +4,14 @@ import { faHeart, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../component/Modal"; // ✅ Import reusable modal
 import prod26 from "../assets/images/prod26.png.png";
 import { useAppSelector } from "../store/hooks";
+import { useDispatch } from "react-redux";
+import { decreaseQunatity, increaseQuantity, removeItem } from "../features/cart/cartSlice";
 
 function CartCard() {
   // Example product list
   const cart = useAppSelector((state) => state.cartReducer.items);
   console.log("cart items:", cart);
-
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Honor 9x 128GB, 6GB",
-      price: 25999,
-      oldPrice: 28999,
-      img: prod26,
-    },
-    {
-      id: 2,
-      name: "Honor 9x 128GB, 6GB",
-      price: 25999,
-      oldPrice: 28999,
-      img: prod26,
-    },
-    {
-      id: 3,
-      name: "Honor 9x 128GB, 6GB",
-      price: 25999,
-      oldPrice: 28999,
-      img: prod26,
-    },
-  ]);
+  const dispatch = useDispatch() 
   const [savedAddresses, setSavedAddresses] = useState([
     {
       id: 1,
@@ -49,40 +28,21 @@ function CartCard() {
       details: "4th Floor, Tower B, Cyber City, Gurugram",
     },
   ]);
-
   const [selectedAddress, setSelectedAddress] = useState(1);
-
-  // Quantity state for each product
-  const [quantities, setQuantities] = useState(products.map(() => 1));
 
   // Modal states
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [productToRemove, setProductToRemove] = useState<number | null>(null);
 
-  const increase = (index: number) => {
-    setQuantities((prev) => prev.map((q, i) => (i === index ? q + 1 : q)));
-  };
 
-  const decrease = (index: number) => {
-    setQuantities((prev) =>
-      prev.map((q, i) => (i === index && q > 1 ? q - 1 : q))
-    );
-  };
-
-  const handleRemoveClick = (id: number) => {
-    setProductToRemove(id);
+  const handleRemoveClick = (item:any) => {
+    setProductToRemove(item);
     setIsRemoveModalOpen(true);
   };
 
   const confirmRemove = () => {
-    if (productToRemove !== null) {
-      setProducts((prev) => prev.filter((p) => p.id !== productToRemove));
-      setQuantities(
-        (prev, i = products.findIndex((p) => p.id === productToRemove)) =>
-          prev.filter((_, idx) => idx !== i)
-      );
-    }
+    dispatch(removeItem(productToRemove));
     setIsRemoveModalOpen(false);
     setProductToRemove(null);
   };
@@ -134,13 +94,13 @@ function CartCard() {
           <div className="flex flex-col justify-between flex-1 text-center sm:text-left">
             {/* Title + Price */}
             <div>
-              <p className="font-medium text-sm sm:text-base">{product.name}</p>
+              <p className="font-medium text-sm sm:text-base">{product?.name}</p>
               <div className="flex justify-center sm:justify-start items-center gap-2 mt-1">
                 <span className="text-red-500 font-bold text-sm sm:text-base">
-                  ₹ {product.discountedPrice.toLocaleString()}
+                  ₹ {product?.discountedPrice.toLocaleString()}
                 </span>
                 <span className="text-gray-500 line-through text-xs sm:text-sm">
-                  ₹ {product.price.toLocaleString()}
+                  ₹ {product?.price.toLocaleString()}
                 </span>
               </div>
             </div>
@@ -148,15 +108,14 @@ function CartCard() {
             {/* Quantity Selector */}
             <div className="flex items-center justify-center sm:justify-start gap-2 mt-2">
               <button
-                onClick={() => decrease(index)}
-                disabled={quantities[index] === 1}
+                 onClick={()=>dispatch(decreaseQunatity(product))}
                 className={`px-2 py-1 border rounded text-sm ${"opacity-50 cursor-not-allowed"}`}
               >
                 -
               </button>
-              <span className="px-3">0</span>
+              <span className="px-3">{product?.quantity}</span>
               <button
-                // onClick={() => increase(index)}
+                onClick={()=>dispatch(increaseQuantity(product))}
                 className="px-2 py-1 border rounded text-sm cursor-pointer"
               >
                 +
@@ -183,7 +142,7 @@ function CartCard() {
                 Move to Wishlist
               </button> */}
               <button
-                onClick={() => handleRemoveClick(product.id)}
+                onClick={() => handleRemoveClick(product)}
                 className="flex cursor-pointer items-center gap-2 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 font-medium text-xs sm:text-sm border border-red-200 hover:bg-red-100 hover:shadow"
               >
                 <FontAwesomeIcon icon={faTrash} />
