@@ -73,3 +73,54 @@ exports.Login = async (req, res) => {
     },
   });
 };
+
+exports.AddAddress = async (req, res) => {
+  try {
+    const userEmail = req.body?.email;
+
+    if (!userEmail) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized — user ID missing",
+      });
+    }
+
+    const { line1, city, state, pincode, phone } = req.body;
+
+    // Basic field validation
+    if (!line1 || !city || !state || !pincode || !phone) {
+      return res.status(400).json({
+        success: false,
+        message: "All address fields are required",
+      });
+    }
+
+    const user = await User.findOne({email:userEmail});
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Add new address
+    user.addresses.push({ line1, city, state, pincode, phone });
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Address added successfully",
+      data: user.addresses,
+    });
+  } catch (error) {
+    console.log("AddAddress Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error adding address",
+      error: error.message,
+    });
+  }
+};
+

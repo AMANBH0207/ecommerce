@@ -80,18 +80,26 @@ const cartSlice = createSlice({
       state.items = state.items.filter(
         (item) => item._id !== action.payload._id
       );
-        state.Quantity--;
-        state.totalAmount -=action.payload.price * action.payload.quantity;
-        state.discountedAmount -= action.payload.discountedPrice * action.payload.quantity;
-        if (action.payload.discountedPrice < 500) {
-          state.deliveryCharge -= 80;
-          state.discountedAmount -= 80;
-        }
-        return;
+      state.Quantity--;
+      state.totalAmount -= action.payload.price * action.payload.quantity;
+      state.discountedAmount -=
+        action.payload.discountedPrice * action.payload.quantity;
+      if (action.payload.discountedPrice < 500) {
+        state.deliveryCharge -= 80;
+        state.discountedAmount -= 80;
+      }
+      return;
+    },
+    removeAll(state) {
+      state.items = [];
+      state.Quantity = 0;
+      state.totalAmount = 0;
+      state.deliveryCharge = 0;
+      state.discountedAmount = 0;
     },
   },
 });
 
-export const { addToCart, increaseQuantity, decreaseQunatity, removeItem } =
+export const { addToCart, increaseQuantity, decreaseQunatity, removeItem, removeAll } =
   cartSlice.actions;
 export default cartSlice.reducer;

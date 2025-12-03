@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+import { removeAll } from "../features/cart/cartSlice";
 import { submitCartOrder } from "../features/cart/cartThunks";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import axios from "axios";
@@ -7,6 +9,7 @@ function TotalAmount() {
     (state) => state.cartReducer
   );
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleCheckout = async () => {
     try {
@@ -37,6 +40,8 @@ function TotalAmount() {
 
             if (verify.data.success) {
               alert("Payment Successful 🎉");
+              dispatch(removeAll());
+              navigate("/home")
             } else {
               alert("Payment Verification Failed ❌");
             }
