@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import logo from "../assets/images/logo.png.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
@@ -9,6 +9,7 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const cartSize = useAppSelector((state) => state.cartReducer.items.length);
+  const {user} = useAppSelector((state)=>state.auth)
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-md">
@@ -51,8 +52,8 @@ function Header() {
         {/* Icons & User Info */}
         <div className="flex items-center space-x-4">
           <div className="text-right text-gray-700 dark:text-gray-200">
-            <div className="text-sm text-blue-500 dark:text-blue-400 cursor-pointer">
-              <Link to="/login">Login</Link>
+            <div className="text-sm  dark:text-blue-400 cursor-pointer">
+             {user?.name ? user?.name:<div className="text-blue-500"><Link to="/login">Login</Link></div>}
             </div>
           </div>
           <div className="flex items-center gap-3">

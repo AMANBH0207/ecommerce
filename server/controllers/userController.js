@@ -85,17 +85,17 @@ exports.AddAddress = async (req, res) => {
       });
     }
 
-    const { line1, city, state, pincode, phone } = req.body;
+    const { name, line1, city, state, pincode, phone } = req.body;
 
     // Basic field validation
-    if (!line1 || !city || !state || !pincode || !phone) {
+    if (!name || !line1 || !city || !state || !pincode || !phone) {
       return res.status(400).json({
         success: false,
         message: "All address fields are required",
       });
     }
 
-    const user = await User.findOne({email:userEmail});
+    const user = await User.findOne({ email: userEmail });
 
     if (!user) {
       return res.status(404).json({
@@ -105,7 +105,7 @@ exports.AddAddress = async (req, res) => {
     }
 
     // Add new address
-    user.addresses.push({ line1, city, state, pincode, phone });
+    user.addresses.push({ name, line1, city, state, pincode, phone });
 
     await user.save();
 
@@ -124,3 +124,54 @@ exports.AddAddress = async (req, res) => {
   }
 };
 
+exports.RemoveAddress = async (req, res) => {
+  try {
+    const { email, addressId } = req.body;
+
+    if (!email || !addressId) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and addressId are required",
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Check if address exists
+    const addressExists = user.addresses.id(addressId);
+    if (!addressExists) {
+      return res.status(404).json({
+        success: false,
+        message: "Address not found",
+      });
+    }
+
+    // Remove address by _id
+    await User.updateOne(
+      { email },
+      { $pull: { addresses: { _id: addressId } } }
+    );
+
+    const updatedUser = await User.findOne({ email });
+
+    return res.status(200).json({
+      success: true,
+      message: "Address removed successfully",
+      data: updatedUser.addresses,
+    });
+  } catch (error) {
+    console.log("RemoveAddress Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error removing address",
+      error: error.message,
+    });
+  }
+};

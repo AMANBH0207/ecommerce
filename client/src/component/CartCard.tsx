@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../component/Modal"; // ✅ Import reusable modal
-import prod26 from "../assets/images/prod26.png.png";
 import { useAppSelector } from "../store/hooks";
 import { useDispatch } from "react-redux";
 import { decreaseQunatity, increaseQuantity, removeItem } from "../features/cart/cartSlice";
@@ -10,8 +9,9 @@ import { decreaseQunatity, increaseQuantity, removeItem } from "../features/cart
 function CartCard() {
   // Example product list
   const cart = useAppSelector((state) => state.cartReducer.items);
-  console.log("cart items:", cart);
-  const dispatch = useDispatch() 
+  const dispatch = useDispatch()
+  const { user } = useAppSelector((state)=>state.auth)
+
   const [savedAddresses, setSavedAddresses] = useState([
     {
       id: 1,
@@ -180,28 +180,28 @@ function CartCard() {
         }}
       >
         <div className="space-y-3">
-          {savedAddresses.map((addr) => (
+          {user?.addresses?.map((addr) => (
             <label
-              key={addr.id}
+              key={addr._id}
               className="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
             >
               <input
                 type="radio"
                 name="address"
-                value={addr.id}
-                checked={selectedAddress === addr.id}
-                onChange={() => setSelectedAddress(addr.id)}
+                value={addr._id}
+                checked={selectedAddress === addr._id}
+                onChange={() => setSelectedAddress(addr._id)}
                 className="mt-1"
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <span className="font-bold">{addr.name}</span>
                   <span className="bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded">
-                    {addr.label}
+                    {addr.line1}, {addr.city}, {addr.state}, {addr.pincode} 
                   </span>
                 </div>
                 <p className="text-sm text-gray-600">
-                  {addr.details}, {addr.pincode}
+                  {addr.phone}
                 </p>
               </div>
             </label>

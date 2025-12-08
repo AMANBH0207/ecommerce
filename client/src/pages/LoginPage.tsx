@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginForm from "../component/LoginForm";
 import loginImage from "../assets/images/login.svg.png";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SignupForm from "../component/SignupForm";
 import { loginUser, register } from "../features/auth/authThunks";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -10,7 +10,7 @@ function LoginPage() {
   const location = useLocation();
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
   const { loading, error, user, token } = useAppSelector((state) => state.auth);
 
   const toggleTheme = () => {
@@ -26,6 +26,11 @@ function LoginPage() {
   const handleSignup = (formValues: any) => {
     dispatch(register(formValues));
   };
+  useEffect(()=>{
+    if(user){
+      navigate("/home")
+    }
+  },[user,navigate])
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-100 dark:bg-gray-900 transition-colors">
