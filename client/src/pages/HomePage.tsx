@@ -1,6 +1,4 @@
 import { useEffect } from "react";
-import slider4 from "../assets/images/slider4.png.png";
-import slider5 from "../assets/images/slider5.png.png";
 import CategoryBest from "../component/CategoryBest";
 import CategoryCard from "../component/CategoryCard";
 import DealOfTheDay from "../component/DealOfTheDay";
@@ -14,8 +12,8 @@ import { getTopProducts } from "../features/products/productThunks";
 
 function HomePage() {
   const dispatch = useAppDispatch();
-  const { banners, loading, error } = useAppSelector((state) => state.banner);
-  const { topProduct, loading:productLoading, error:productError } = useAppSelector((state) => state.product);
+  const { banners } = useAppSelector((state) => state.banner);
+  const { topProduct } = useAppSelector((state) => state.product);
   useEffect(() => {
     dispatch(getBanners());
     dispatch(getTopProducts());
@@ -49,14 +47,13 @@ function HomePage() {
           <ImageSlider banners={banners?.slider} />
 
           <div className="flex flex-wrap gap-2">
-            <img
-              src={slider4}
+            {banners?.underSlider?.map((item)=>(
+              <img
+              src={item?.image}
               className="rounded-lg flex-1 min-w-[120px] object-cover"
             />
-            <img
-              src={slider5}
-              className="rounded-lg flex-1 min-w-[120px] object-cover"
-            />
+            ))}
+            
           </div>
         </div>
 

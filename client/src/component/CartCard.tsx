@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../component/Modal"; // ✅ Import reusable modal
@@ -12,23 +12,7 @@ function CartCard() {
   const dispatch = useDispatch()
   const { user } = useAppSelector((state)=>state.auth)
 
-  const [savedAddresses, setSavedAddresses] = useState([
-    {
-      id: 1,
-      label: "Home",
-      name: "Aman",
-      pincode: "249202",
-      details: "109a, Meeranagar gali no7 near reliance, Rishikesh",
-    },
-    {
-      id: 2,
-      label: "Office",
-      name: "Aman",
-      pincode: "110001",
-      details: "4th Floor, Tower B, Cyber City, Gurugram",
-    },
-  ]);
-  const [selectedAddress, setSelectedAddress] = useState(1);
+  const [selectedAddress, setSelectedAddress] = useState("1");
 
   // Modal states
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
@@ -78,15 +62,15 @@ function CartCard() {
     <>
       {address}
 
-      {cart.map((product, index) => (
+      {cart?.map((product) => (
         <div
-          key={product._id}
+          key={product?._id}
           className="p-3 flex flex-col sm:flex-row gap-3 items-center sm:items-start bg-gray-100 rounded-lg shadow mb-4"
         >
           {/* Product Image */}
           <img
-            src={product?.images[0]?.url}
-            alt={product?.name}
+            src={product?.images?.[0]?.url}
+            alt={product?.name||"Product Image"}
             className="w-24 h-24 object-contain"
           />
 
@@ -100,7 +84,7 @@ function CartCard() {
                   ₹ {product?.discountedPrice.toLocaleString()}
                 </span>
                 <span className="text-gray-500 line-through text-xs sm:text-sm">
-                  ₹ {product?.price.toLocaleString()}
+                  ₹ {product?.price?.toLocaleString()}
                 </span>
               </div>
             </div>
@@ -188,16 +172,16 @@ function CartCard() {
               <input
                 type="radio"
                 name="address"
-                value={addr._id}
-                checked={selectedAddress === addr._id}
-                onChange={() => setSelectedAddress(addr._id)}
+                value={addr?._id}
+                checked={selectedAddress === addr?._id}
+                onChange={() => setSelectedAddress(addr?._id)}
                 className="mt-1"
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold">{addr.name}</span>
+                  <span className="font-bold">{addr?.name}</span>
                   <span className="bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded">
-                    {addr.line1}, {addr.city}, {addr.state}, {addr.pincode} 
+                    {addr?.line1}, {addr?.city}, {addr?.state}, {addr?.pincode} 
                   </span>
                 </div>
                 <p className="text-sm text-gray-600">

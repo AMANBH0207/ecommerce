@@ -17,6 +17,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Banners from './pages/Banners/Banners';
 import Products from './pages/Products/Products';
+import Sections from './pages/Sections/Sections';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -62,6 +63,17 @@ function App() {
             <>
               {/* <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" /> */}
               <Products />
+            </>
+          }
+        />
+
+
+         <Route
+         path="/sections"
+          element={
+            <>
+              {/* <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" /> */}
+              <Sections />
             </>
           }
         />

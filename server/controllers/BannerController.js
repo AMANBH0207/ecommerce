@@ -65,6 +65,7 @@ exports.getHomepageBanners = async (req, res) => {
       static: banners.filter(b => b.bannerType === "static"),
       showcase: banners.filter(b => b.bannerType === "showcase"),
       mobiles: banners.filter(b => b.bannerType === "mobiles"),
+      underSlider:banners.filter(b => b.bannerType === "under_slider")
     };
 
     res.status(200).json({ success: true, data: grouped });

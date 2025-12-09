@@ -7,8 +7,8 @@ function BannerModal({ formState, errors, handleChange }:ModalProps<BannerFormVa
     { value: 'showcase', label: 'Showcase' },
     { value: 'mobiles', label: 'Mobiles' },
     { value: 'laptops', label: 'Laptops' },
+    { value: 'under_slider', label: 'UnderSlider' },
   ];
-
 
   return (
     <form className="w-full max-w-[600px] sm:px-4 mx-auto overflow-x-hidden">

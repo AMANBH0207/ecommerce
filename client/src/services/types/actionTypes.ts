@@ -15,6 +15,7 @@ export interface BannersDataResponse {
     slider: BannersData[];
     static: BannersData[];
     mobiles: BannersData[];
+    underSlider:BannersData[];
 }
 
 

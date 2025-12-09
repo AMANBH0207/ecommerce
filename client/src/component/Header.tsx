@@ -1,12 +1,12 @@
-import { use, useEffect, useState } from "react";
+import { useState } from "react";
 import logo from "../assets/images/logo.png.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 
 function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen] = useState(false);
   const navigate = useNavigate();
   const cartSize = useAppSelector((state) => state.cartReducer.items.length);
   const {user} = useAppSelector((state)=>state.auth)
@@ -57,17 +57,6 @@ function Header() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {/* <div className="relative">
-              <FontAwesomeIcon
-              className="w-10 py-[0.6rem] px-[0.5rem] h-10 flex items-center justify-center border border-gray-300 dark:border-gray-600 rounded-full text-gray-700 dark:text-gray-200 hover:text-red-500 dark:hover:text-red-400 cursor-pointer"
-              icon={faHeart}
-            />
-
-            <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-semibold rounded-full w-5 h-5 flex items-center justify-center leading-none">
-                3
-              </span>
-            </div> */}
-
             <div className="relative">
               <FontAwesomeIcon
                 className="w-10 py-[0.6rem] px-[0.5rem] h-10 flex items-center justify-center border border-gray-300 dark:border-gray-600 rounded-full text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer"
@@ -80,11 +69,6 @@ function Header() {
               )}
             </div>
           </div>
-
-          {/* <div className="text-right text-gray-700 dark:text-gray-200">
-            <div className="font-medium">Cart</div>
-            <div className="text-sm">Rs 2560</div>
-          </div> */}
         </div>
       </div>
 

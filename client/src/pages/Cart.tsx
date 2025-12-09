@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import CartCard from "../component/CartCard";
 import TotalAmount from "../component/TotalAmount";
 import { useAppSelector } from "../store/hooks";
@@ -7,13 +6,9 @@ import NoCartItems from "../component/NoCartItems";
 function Cart() {
   const cart = useAppSelector((state) => state.cartReducer.items);
 
-  useEffect(() => {
-    console.log(cart.length);
-  }, [cart]);
-
   return (
     <div className="p-2 bg-gray-100">
-      {cart.length > 0 ? (
+      {cart?.length > 0 ? (
         <>
           <div className="p-4 sm:p-8 rounded-lg bg-white shadow-lg grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Cart Items */}

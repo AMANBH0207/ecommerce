@@ -1,7 +1,7 @@
 import axios, { type AxiosRequestHeaders } from "axios";
-import type { LoginPayload, LoginRegisterResponse, RegisterPayload, submitOrder, submitOrderPayload} from "./types/authTypes";
+import type { LoginPayload, LoginRegisterResponse, RegisterPayload, submitOrderPayload} from "./types/authTypes";
 import type { ApiResponse, submitOrderResponse } from "./types/common";
-import type { BannersDataResponse, singleProductPayload, singleProductResponse, topCategoriesResponse } from "./types/actionTypes";
+import type { BannersDataResponse, singleProductResponse, topCategoriesResponse } from "./types/actionTypes";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,

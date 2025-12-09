@@ -33,9 +33,6 @@ function Products() {
     dispatch(getProducts());
   }, []);
 
-  useEffect(() => {
-    console.log('Products data:', data);
-  }, [data]);
 
   const header = [
     { name: 'Name', key: 'name' },
@@ -111,7 +108,7 @@ function Products() {
             }
             header={header}
             cols={6}
-            heading="Banners"
+            heading="Products"
           />
         </div>
 

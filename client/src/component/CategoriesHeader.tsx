@@ -27,12 +27,6 @@ function CategoriesHeader() {
         </button>
       </div>
 
-      {/* Info Badges */}
-      <div className="flex flex-wrap justify-center md:justify-end gap-4 text-xs sm:text-sm font-semibold">
-        <span>FREE SHIPPING OVER $200</span>
-        <span>30 DAY MONEY BACK</span>
-        <span>100% SECURE PAYMENT</span>
-      </div>
     </div>
   );
 }
