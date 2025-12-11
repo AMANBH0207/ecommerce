@@ -24,11 +24,11 @@ function ImageSlider({ banners }: BannersProps) {
         >
           {banners?.map((banner: BannersData) => (
             <SwiperSlide key={banner._id}>
-              <div className="relative w-full h-[250px] sm:h-[350px] md:h-[450px]">
+              <div className="relative w-full ">
                 <img
                   src={banner.image}
                   alt={`Slider ${banner._id}`}
-                  className="w-full h-full object-cover rounded-lg"
+                  className="w-full h-auto object-contain rounded-lg"
                 />
 
                 {/* Responsive Bottom-Left Button */}
